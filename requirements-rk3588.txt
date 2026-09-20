@@ -1,0 +1,9 @@
+# Tested on Debian 11 aarch64 / Python 3.9.2. Runtime dependencies only.
+numpy==1.26.4
+scipy==1.13.1
+soundfile==0.13.1
+onnxruntime==1.16.3
+setuptools==80.9.0
+psutil==7.2.2
+ruamel.yaml==0.19.1
+rknn-toolkit-lite2 @ https://raw.githubusercontent.com/airockchip/rknn-toolkit2/59a913d172e7f5ff03c9076e2ec7b1b1288ffd08/rknn-toolkit-lite2/packages/rknn_toolkit_lite2-2.3.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl#sha256=065ca7db91fd342b08a01c68ffd317308c86b696c96b878373f3635b3e47adef

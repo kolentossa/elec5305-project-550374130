@@ -1,0 +1,12 @@
+/home/cat/projects/elec5305-yamnet-smoke/.venv/lib/python3.9/site-packages/rknnlite/api/rknn_lite.py:41: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+W rknn-toolkit-lite2 version: 2.3.2
+W Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+Input: 6.731 s -> first 3.000 s
+Patch scores: (6, 521); finite and within [0, 1]
+Mean-score top class: Animal
+Saved scores, class map and run metadata to results/rk3588_npu
+I RKNN: [15:50:22.588] RKNN Runtime Information, librknnrt version: 2.3.2 (429f97ae6b@2025-04-09T09:09:27)
+I RKNN: [15:50:22.588] RKNN Driver Information, version: 0.9.8
+I RKNN: [15:50:22.589] RKNN Model Information, version: 6, toolkit version: 2.3.2(compiler version: 2.3.2 (@2025-04-03T08:26:16)), target: RKNPU v2, target platform: rk3588, framework name: ONNX, framework layout: NCHW, model inference type: static_shape
+W RKNN: [15:50:22.600] query RKNN_QUERY_INPUT_DYNAMIC_RANGE error, rknn model is static shape type, please export rknn with dynamic_shapes

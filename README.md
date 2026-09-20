@@ -1,171 +1,74 @@
-# Real-Time Urban Sound Classification on RK3588
+# Streaming Urban Sound Event Detection on RK3588 Using Pretrained YAMNet
 
-An ELEC5305 project for privacy-preserving, real-time environmental sound classification using log-Mel spectrograms, a lightweight convolutional neural network (CNN), and INT8 inference on the RK3588 platform.
+ELEC5305 project by **Mingze Li (550374130)**.
 
-> Project status: proposal and initial implementation stage.
+This project studies how to turn pretrained YAMNet audio-event scores into reliable, low-latency urban sound-event detections. The target system runs on RK3588, supports overlapping events, and reports event labels with start/end timestamps while processing microphone audio locally.
 
-[Read the full project proposal](docs/ELEC5305_Project_Proposal_Mingze_Li.pdf)
+**Current status:** the first smoke test is complete on both Windows ONNX/CPU and an **RK3588 NPU (LubanCat-5 V2)**. Both retain all **6 patches x 521 class scores** from Rockchip's 3-second YAMNet model. URBAN-SED evaluation and live event detection are pending.
 
-## Project Overview
+## Research question
 
-Urban monitoring systems often depend on cameras or cloud processing, which can increase bandwidth usage and expose sensitive data. This project instead processes microphone audio locally on an RK3588 board. The system will classify the ten UrbanSound8K sound categories, display the predicted class and confidence, and record only event labels and timestamps rather than transmitting raw audio.
+How should YAMNet's short-time class scores be temporally integrated so that a streaming detector balances false alarms, event fragmentation, and onset/offset detection delay?
 
-The project compares a conventional MFCC-SVM baseline with a compact CNN trained on log-Mel spectrograms. The selected CNN will be exported through ONNX, converted to RKNN, quantised to INT8, and evaluated on the RK3588 under a real-time streaming workload.
+The revised direction uses an existing pretrained classifier and investigates temporal decision-making. The [original proposal](docs/ELEC5305_Project_Proposal_Mingze_Li.pdf) is retained as a historical document; its from-scratch CNN training plan and original success targets have been superseded.
 
-## Objectives
+## First experiment: retain patch-level scores
 
-- Build a reproducible UrbanSound8K preprocessing and fold-based evaluation pipeline.
-- Establish an MFCC-SVM baseline for environmental sound classification.
-- Train a lightweight CNN using log-Mel spectrogram inputs.
-- Study the effect of time-domain and spectrogram augmentation.
-- Convert and quantise the selected model for RK3588 deployment.
-- Demonstrate live USB microphone inference with bounded latency.
-- Compare accuracy, latency, throughput, and model size across deployment formats.
+The [first-run report](docs/first_run.md) records the environment, source versions, preprocessing, output shapes, results, and verification. The Windows CPU reference is in [results/smoke_test](results/smoke_test/):
 
-## Proposed System
+| File | Contents |
+| --- | --- |
+| [scores.csv](results/smoke_test/scores.csv) | Six rows of 521 scores, with patch timing and padding metadata |
+| [scores.npy](results/smoke_test/scores.npy) | Exact float32 score array, shape `(6, 521)` |
+| [class_map.csv](results/smoke_test/class_map.csv) | Model output indices and all 521 AudioSet display names |
+| [run.json](results/smoke_test/run.json) | Input metadata, model/source hashes, package versions, and measured output shapes |
 
-```mermaid
-flowchart LR
-    A[USB microphone] --> B[16 kHz mono audio]
-    B --> C[2 s sliding window<br/>0.5 s update interval]
-    C --> D[STFT and 64-band<br/>log-Mel spectrogram]
-    D --> E[Lightweight CNN]
-    E --> F[ONNX to RKNN<br/>INT8 model]
-    F --> G[RK3588 inference]
-    G --> H[Class and confidence]
-    G --> I[Label and timestamp log]
+The official sample is 6.731125 seconds long. Following the Rockchip example, this experiment uses its **first 3 seconds**. The mean-score top class is **Animal**. This sample verifies the inference pipeline; it is not an urban-event accuracy evaluation. The 521-class list is also not yet a mapping to URBAN-SED's ten classes.
+
+The [RK3588 NPU results](results/rk3588_npu/) include the same score files plus conversion/runtime logs. Compared with Windows CPU, mean absolute score difference is **0.001982**, maximum difference is **0.177239**, and patch-level top-1 agrees on **5 of 6 patches**. The largest discrepancy is in the final, padded patch. These are numerical diagnostics on one sample, not a dataset accuracy measurement. See [board setup and reproduction](docs/rk3588_setup.md).
+
+### Reproduce on Windows CPU
+
+Tested with Python 3.12.10 on Windows 11. From the repository root:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe scripts/yamnet_smoke_test.py --output .cache/runs/first-run
 ```
 
-### Audio Preprocessing
+The script downloads the official model, sample audio, and class list into `.cache/yamnet/` and verifies SHA-256 hashes. It needs Internet access on first use. Subsequent runs can reuse verified cached assets. Use a new `--output` directory for each run; existing results are protected from overwrite.
 
-| Parameter | Proposed setting |
-| --- | --- |
-| Sample format | 16 kHz, mono |
-| Input window | 2 seconds |
-| Window update | Every 0.5 seconds |
-| STFT window | 25 ms Hann window |
-| STFT frame hop | 10 ms |
-| FFT size | 512 points |
-| Spectrogram | 64 Mel bands with log compression |
-| Normalisation | Per-band statistics fitted on training data only |
+For a different audio file:
 
-Short clips will be zero-padded. Longer clips will be segmented without mixing samples from different official dataset folds.
-
-### Models
-
-**Baseline:** 20 mel-frequency cepstral coefficients (MFCCs), summarised using temporal mean and standard deviation, followed by a support vector machine (SVM).
-
-**Proposed model:** a compact CNN built from depthwise-separable convolution blocks, global average pooling, and a ten-class softmax output layer. Training will use class-balanced sampling, cross-entropy loss, and validation macro F1 for model selection.
-
-### Training and Augmentation
-
-Training will be implemented in PyTorch. Planned augmentation includes:
-
-- Random time shifts
-- Gain variation
-- Time-frequency masking based on SpecAugment
-
-The ablation study will compare no augmentation, time-domain augmentation, spectrogram masking, and their combination.
-
-## Dataset and Evaluation
-
-The project uses [UrbanSound8K](https://urbansounddataset.weebly.com/urbansound8k.html), which contains 8,732 labelled audio clips arranged into ten predefined folds. The official folds will be preserved to keep evaluation reproducible and avoid data leakage.
-
-The ten target classes are:
-
-1. Air conditioner
-2. Car horn
-3. Children playing
-4. Dog bark
-5. Drilling
-6. Engine idling
-7. Gun shot
-8. Jackhammer
-9. Siren
-10. Street music
-
-Evaluation will report:
-
-- Accuracy and macro F1 across the ten held-out folds
-- Per-class recall and confusion matrices
-- Model size and throughput
-- P50 and P95 preprocessing-plus-inference latency
-- Accuracy change after INT8 quantisation
-- Desktop FP32 versus RK3588 INT8 predictions on the same test clips
-
-### Success Criteria
-
-| Metric | Target |
-| --- | --- |
-| Macro F1 | At least 0.70 |
-| INT8 accuracy loss | Less than 3 percentage points from FP32 |
-| RK3588 P95 latency | Less than the 0.5-second update interval |
-| Prototype behaviour | Ten-class streaming inference from a USB microphone |
-
-## Experimental Questions
-
-1. How much does the log-Mel CNN improve macro F1 over the MFCC-SVM baseline under the same fold-based evaluation?
-2. Which augmentation settings improve generalisation without masking class-specific acoustic cues?
-3. How much accuracy is lost after INT8 conversion, and does the quantised model meet the RK3588 streaming deadline?
-
-## Planned Repository Structure
-
-```text
-.
-|-- configs/              # Experiment and deployment configurations
-|-- data/                 # Local dataset location (not committed)
-|-- docs/                 # Proposal and project documentation
-|-- models/               # Exported model artifacts
-|-- scripts/              # Training, evaluation, conversion, and demo entry points
-|-- src/
-|   |-- data/             # Dataset loading and preprocessing
-|   |-- features/         # MFCC and log-Mel feature extraction
-|   |-- models/           # SVM and lightweight CNN definitions
-|   |-- deployment/       # ONNX/RKNN conversion and RK3588 inference
-|   `-- streaming/        # Microphone capture and live prediction
-|-- tests/                # Automated tests
-`-- README.md
+```powershell
+.\.venv\Scripts\python.exe scripts/yamnet_smoke_test.py --audio path/to/audio.wav --output .cache/runs/custom-audio
 ```
 
-This structure is planned and will be populated as implementation progresses.
+The script converts to 16 kHz mono, takes the first 3 seconds, and pads shorter inputs. The model already contains the log-Mel frontend. This is a fixed-window experiment, not a continuous microphone runner. Use `requirements.txt` for Windows CPU and `requirements-rk3588.txt` for the tested board runtime.
 
-## Timeline
+## Planned experiments
 
-| Weeks | Task and output |
-| --- | --- |
-| 1-2 | Confirm scope, create the public repository, and reproduce the UrbanSound8K data pipeline. |
-| 3-4 | Review environmental sound classification methods and implement STFT, log-Mel, and MFCC features. |
-| 5 | Train and evaluate the MFCC-SVM baseline. |
-| 6-8 | Implement the lightweight CNN, tune training, and add augmentation. |
-| 9 | Run fold-based evaluation and analyse the confusion matrix. |
-| 10 | Export the model, perform INT8 calibration, and convert it to RKNN. |
-| 11 | Deploy the streaming prototype and benchmark latency, throughput, and model size. |
-| 12 | Complete results, figures, README instructions, and the demonstration. |
-| 13 | Finalise the report, GitHub Pages site, and repository release. |
+1. Load URBAN-SED examples, document the mapping from YAMNet outputs to the ten target labels, and plot time-varying scores against true event boundaries.
+2. Establish raw-score thresholding with a global threshold, then test class-specific thresholds.
+3. Compare raw thresholding, causal temporal smoothing, and hysteresis/simple event states.
+4. Evaluate event precision, recall, F1, class-wise performance, false alarms, missed events, fragmentation, and onset/offset delay; monitor CPU/NPU score differences on real test cases.
+5. Deploy the selected method in a microphone streaming prototype and measure the complete pipeline, including buffering and preprocessing.
 
-## Expected Deliverables
+All thresholds and temporal parameters will be selected on the **validation set only**. URBAN-SED's predefined train/validation/test split will be preserved. Its soundscapes use source UrbanSound8K folds 1-6, 7-8, and 9-10 respectively. The test set is reserved for the selected method.
 
-- Reproducible preprocessing and feature extraction code
-- MFCC-SVM baseline and lightweight CNN training pipelines
-- Evaluation scripts and saved model files
-- ONNX export, RKNN conversion, and INT8 calibration workflow
-- RK3588 USB microphone streaming prototype
-- Accuracy, latency, throughput, and model-size benchmarks
-- Setup instructions and a short demonstration
-- Final report and GitHub Pages project site
+Adapting a small classifier on frozen YAMNet embeddings is an optional extension if direct class mapping proves inadequate. Full-network retraining is outside the current minimum scope.
 
-## References
+## Resources
 
-1. J. Salamon, C. Jacoby, and J. P. Bello, "A Dataset and Taxonomy for Urban Sound Research," *Proceedings of the 22nd ACM International Conference on Multimedia*, 2014. [https://doi.org/10.1145/2647868.2655045](https://doi.org/10.1145/2647868.2655045)
-2. K. J. Piczak, "Environmental Sound Classification with Convolutional Neural Networks," *2015 IEEE 25th International Workshop on Machine Learning for Signal Processing*, 2015. [https://doi.org/10.1109/MLSP.2015.7324337](https://doi.org/10.1109/MLSP.2015.7324337)
-3. M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, and L.-C. Chen, "MobileNetV2: Inverted Residuals and Linear Bottlenecks," *2018 IEEE/CVF Conference on Computer Vision and Pattern Recognition*, 2018. [https://doi.org/10.1109/CVPR.2018.00474](https://doi.org/10.1109/CVPR.2018.00474)
-4. D. S. Park et al., "SpecAugment: A Simple Data Augmentation Method for Automatic Speech Recognition," *Interspeech 2019*, 2019. [https://doi.org/10.21437/Interspeech.2019-2680](https://doi.org/10.21437/Interspeech.2019-2680)
+- [Official YAMNet implementation and feature details](https://github.com/tensorflow/models/tree/master/research/audioset/yamnet)
+- [Official YAMNet class map](https://github.com/tensorflow/models/blob/master/research/audioset/yamnet/yamnet_class_map.csv)
+- [Rockchip YAMNet example at the version used here](https://github.com/airockchip/rknn_model_zoo/tree/bad6c7334531becaf90a561988519b7bec34d0ab/examples/yamnet)
+- [RKNN Toolkit2](https://github.com/airockchip/rknn-toolkit2)
+- [URBAN-SED dataset](https://zenodo.org/records/1002874)
+- [soundata URBAN-SED loader and split documentation](https://github.com/soundata/soundata/blob/main/soundata/datasets/urbansed.py)
+- [sed_scores_eval](https://github.com/fgnt/sed_scores_eval) and [sed_eval](https://github.com/TUT-ARG/sed_eval)
 
-## Project Information
+Upstream models, sample audio, and class definitions retain their respective terms. Downloaded assets and the Python environment are excluded from Git; the repository records their provenance and hashes.
 
-- **Student:** Mingze Li
-- **Student ID:** 550374130
-- **Course:** ELEC5305
-- **GitHub:** [kolentossa](https://github.com/kolentossa)
-- **Repository:** [elec5305-project-550374130](https://github.com/kolentossa/elec5305-project-550374130)
-- **GitHub Pages:** [Project site](https://kolentossa.github.io/elec5305-project-550374130/)
+[Project website](https://kolentossa.github.io/elec5305-project-550374130/) | [GitHub repository](https://github.com/kolentossa/elec5305-project-550374130)

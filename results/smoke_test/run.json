@@ -1,0 +1,114 @@
+{
+  "created_utc": "2026-09-20T11:24:20.447055+00:00",
+  "execution": "local ONNX Runtime CPU; not RK3588/NPU",
+  "upstream_commit": "bad6c7334531becaf90a561988519b7bec34d0ab",
+  "assets": {
+    "yamnet_3s.onnx": {
+      "url": "https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yamnet/yamnet_3s.onnx",
+      "sha256": "47363761b27c34fe1f9da8177c40589e9714b422e129f3210be730338f8cf72c"
+    },
+    "test.wav": {
+      "url": "https://raw.githubusercontent.com/airockchip/rknn_model_zoo/bad6c7334531becaf90a561988519b7bec34d0ab/examples/yamnet/model/test.wav",
+      "sha256": "f2a00c3a3e7596f1541c4cbd59d6034a674b76ae9c53c8784882345c044da558"
+    },
+    "yamnet_class_map.txt": {
+      "url": "https://raw.githubusercontent.com/airockchip/rknn_model_zoo/bad6c7334531becaf90a561988519b7bec34d0ab/examples/yamnet/model/yamnet_class_map.txt",
+      "sha256": "108826ee87f1c9ef2c907e73dadfb9444141fda2069f742b568bd3a93c71da1d"
+    }
+  },
+  "environment": {
+    "python": "3.12.10",
+    "system": "Windows",
+    "release": "11",
+    "machine": "AMD64",
+    "packages": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "soundfile": "0.14.0",
+      "onnxruntime": "1.30.0"
+    },
+    "providers": [
+      "CPUExecutionProvider"
+    ]
+  },
+  "source_audio": {
+    "filename": "test.wav",
+    "sha256": "f2a00c3a3e7596f1541c4cbd59d6034a674b76ae9c53c8784882345c044da558",
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "samples_per_channel": 107698,
+    "duration_seconds": 6.731125
+  },
+  "model_input": {
+    "shape": [
+      1,
+      48000
+    ],
+    "sample_rate_hz": 16000,
+    "duration_seconds": 3.0,
+    "valid_audio_seconds": 3.0,
+    "trimmed_samples": 59698,
+    "input_padding_samples": 0,
+    "policy": "mono mean; scipy Fourier resampling if needed; first 3 s; zero-pad if shorter"
+  },
+  "outputs": {
+    "embeddings": {
+      "shape": [
+        6,
+        1024
+      ],
+      "dtype": "float32"
+    },
+    "log_mel_spectrogram": {
+      "shape": [
+        336,
+        64
+      ],
+      "dtype": "float32"
+    },
+    "scores": {
+      "shape": [
+        6,
+        521
+      ],
+      "dtype": "float32"
+    }
+  },
+  "timing": {
+    "patch_hop_seconds": 0.48,
+    "patch_audio_context_seconds": 0.9750000000000001,
+    "single_session_run_seconds": 0.005702800001017749,
+    "note": "One cold call, not a benchmark. Includes ONNX frontend; excludes load, I/O and external input preparation. Patch times are offline support intervals, not live detection times."
+  },
+  "score_range": [
+    0.0,
+    0.9592856764793396
+  ],
+  "mean_score_top5": [
+    {
+      "index": 67,
+      "label": "Animal",
+      "score": 0.7112374901771545
+    },
+    {
+      "index": 68,
+      "label": "Domestic animals, pets",
+      "score": 0.5440847277641296
+    },
+    {
+      "index": 76,
+      "label": "Cat",
+      "score": 0.4809623658657074
+    },
+    {
+      "index": 78,
+      "label": "Meow",
+      "score": 0.27057012915611267
+    },
+    {
+      "index": 80,
+      "label": "Caterwaul",
+      "score": 0.16076983511447906
+    }
+  ]
+}

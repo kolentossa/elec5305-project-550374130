@@ -1,0 +1,37 @@
+{
+  "reference": "smoke_test",
+  "candidate": "rk3588_npu",
+  "shape": [
+    6,
+    521
+  ],
+  "mean_absolute_score_difference": 0.001982071520957288,
+  "max_absolute_score_difference": 0.1772390604019165,
+  "largest_difference": {
+    "patch_index": 5,
+    "class_index": 80,
+    "class_name": "Caterwaul",
+    "reference_score": 0.4277273416519165,
+    "candidate_score": 0.25048828125
+  },
+  "patch_top1_reference": [
+    0,
+    76,
+    67,
+    67,
+    67,
+    76
+  ],
+  "patch_top1_candidate": [
+    0,
+    76,
+    67,
+    67,
+    67,
+    67
+  ],
+  "patch_top1_agreement_count": 5,
+  "mean_score_top1_reference": "Animal",
+  "mean_score_top1_candidate": "Animal",
+  "note": "Numerical comparison on one unannotated clip; not event accuracy or general model equivalence."
+}

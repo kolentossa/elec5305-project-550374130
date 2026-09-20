@@ -1,0 +1,124 @@
+{
+  "created_utc": "2026-04-13T07:50:22.631102+00:00",
+  "execution": "RK3588 RKNN Runtime / NPU_CORE_0",
+  "upstream_commit": "bad6c7334531becaf90a561988519b7bec34d0ab",
+  "assets": {
+    "yamnet_3s.onnx": {
+      "url": "https://ftrg.zbox.filez.com/v2/delivery/data/95f00b0fc900458ba134f8b180b3f7a1/examples/yamnet/yamnet_3s.onnx",
+      "sha256": "47363761b27c34fe1f9da8177c40589e9714b422e129f3210be730338f8cf72c"
+    },
+    "test.wav": {
+      "url": "https://raw.githubusercontent.com/airockchip/rknn_model_zoo/bad6c7334531becaf90a561988519b7bec34d0ab/examples/yamnet/model/test.wav",
+      "sha256": "f2a00c3a3e7596f1541c4cbd59d6034a674b76ae9c53c8784882345c044da558"
+    },
+    "yamnet_class_map.txt": {
+      "url": "https://raw.githubusercontent.com/airockchip/rknn_model_zoo/bad6c7334531becaf90a561988519b7bec34d0ab/examples/yamnet/model/yamnet_class_map.txt",
+      "sha256": "108826ee87f1c9ef2c907e73dadfb9444141fda2069f742b568bd3a93c71da1d"
+    }
+  },
+  "environment": {
+    "python": "3.9.2",
+    "system": "Linux",
+    "release": "5.10.160",
+    "machine": "aarch64",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.13.1",
+      "soundfile": "0.13.1",
+      "onnxruntime": "1.16.3",
+      "rknn-toolkit-lite2": "2.3.2"
+    },
+    "providers": [
+      "RKNNLite / RK3588 / NPU_CORE_0"
+    ],
+    "board_model": "Embedfire LubanCat-5 V2"
+  },
+  "source_audio": {
+    "filename": "test.wav",
+    "sha256": "f2a00c3a3e7596f1541c4cbd59d6034a674b76ae9c53c8784882345c044da558",
+    "sample_rate_hz": 16000,
+    "channels": 1,
+    "samples_per_channel": 107698,
+    "duration_seconds": 6.731125
+  },
+  "model_input": {
+    "shape": [
+      1,
+      48000
+    ],
+    "sample_rate_hz": 16000,
+    "duration_seconds": 3.0,
+    "valid_audio_seconds": 3.0,
+    "trimmed_samples": 59698,
+    "input_padding_samples": 0,
+    "policy": "mono mean; scipy Fourier resampling if needed; first 3 s; zero-pad if shorter"
+  },
+  "outputs": {
+    "embeddings": {
+      "shape": [
+        6,
+        1024
+      ],
+      "dtype": "float32"
+    },
+    "log_mel_spectrogram": {
+      "shape": [
+        336,
+        64
+      ],
+      "dtype": "float32"
+    },
+    "scores": {
+      "shape": [
+        6,
+        521
+      ],
+      "dtype": "float32"
+    }
+  },
+  "timing": {
+    "patch_hop_seconds": 0.48,
+    "patch_audio_context_seconds": 0.9750000000000001,
+    "single_session_run_seconds": 0.015340854999976727,
+    "note": "One cold call, not a benchmark. Includes embedded frontend; excludes load, I/O and external input preparation. Patch times are offline support intervals, not live detection times. Timestamp uses the executing device's clock."
+  },
+  "score_range": [
+    0.0018310546875,
+    0.958984375
+  ],
+  "mean_score_top5": [
+    {
+      "index": 67,
+      "label": "Animal",
+      "score": 0.7212066650390625
+    },
+    {
+      "index": 68,
+      "label": "Domestic animals, pets",
+      "score": 0.5586039423942566
+    },
+    {
+      "index": 76,
+      "label": "Cat",
+      "score": 0.4925588071346283
+    },
+    {
+      "index": 78,
+      "label": "Meow",
+      "score": 0.2926381528377533
+    },
+    {
+      "index": 80,
+      "label": "Caterwaul",
+      "score": 0.1333363801240921
+    }
+  ],
+  "converted_model": {
+    "filename": "yamnet_3s.rknn",
+    "sha256": "03a415d717c330a151beeeab6f6dd5e55d47d7461463395ccc07017169c4f9b8"
+  },
+  "runtime_library": {
+    "filename": "librknnrt.so",
+    "sha256": "d31fc19c85b85f6091b2bd0f6af9d962d5264a4e410bfb536402ec92bac738e8"
+  }
+}
