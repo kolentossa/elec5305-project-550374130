@@ -14,7 +14,7 @@ Run Rockchip's pretrained `yamnet_3s.onnx` with the official sample audio and re
 
 **Completed on Windows CPU:** `(6, 521)` float32 scores were saved and checked against the pinned official Python example. All 3,126 values match exactly in this environment. The official clip-level calculation, `scores.mean(axis=0).argmax()`, gives index 67, **Animal**.
 
-**Also completed on RK3588 NPU:** an independent project environment on a LubanCat-5 V2 ran the converted FP16 model using RKNN Toolkit/Lite/Runtime 2.3.2 and driver 0.9.8. All six patches and 521 scores per patch were preserved. See [board setup](rk3588_setup.md) and [board results](../results/rk3588_npu/). Annotated URBAN-SED event detection evaluation had not been implemented at this milestone.
+**Also completed on RK3588 NPU:** an independent project environment on a LubanCat-5 V2 ran the converted FP16 model using RKNN Toolkit/Lite/Runtime 2.3.2 and driver 0.9.8. All six patches and 521 scores per patch were preserved. See [board setup](rk3588_setup.md) and [board results](https://github.com/kolentossa/elec5305-project-550374130/tree/main/results/rk3588_npu). Annotated URBAN-SED event detection evaluation had not been implemented at this milestone.
 
 ## Sources and environment
 
@@ -90,7 +90,7 @@ Mean-score top class: Animal
 Saved scores, class map and run metadata to <output directory>
 ```
 
-The committed reference artifacts are under [results/smoke_test](../results/smoke_test/). Reproductions use an ignored output folder so they do not overwrite those artifacts. Use another folder for subsequent runs. Small numerical differences may occur on a different platform or runtime version; bitwise equality was verified only for the reference comparison on this machine.
+The committed reference artifacts are under [results/smoke_test](https://github.com/kolentossa/elec5305-project-550374130/tree/main/results/smoke_test). Reproductions use an ignored output folder so they do not overwrite those artifacts. Use another folder for subsequent runs. Small numerical differences may occur on a different platform or runtime version; bitwise equality was verified only for the reference comparison on this machine.
 
 `run.json` includes one cold `session.run` duration for traceability. It includes the frontend operations embedded in the ONNX graph, excludes model loading/audio I/O/external input preparation, and is not an end-to-end or NPU benchmark.
 
@@ -124,7 +124,7 @@ The [comparison artifact](../results/rk3588_npu/comparison_to_windows_cpu.json) 
 
 The largest score difference is for `Caterwaul` in patch 5: CPU 0.427727 versus NPU 0.250488. That is the final padded patch, but this single observation does not establish padding as the cause. The NPU minimum score is approximately 0.001831, while many CPU scores are near zero. These discrepancies should be examined on annotated data before assuming thresholds transfer unchanged across backends. The current experiment proves deployment and score extraction, not model equivalence or event accuracy.
 
-An additional [ONNX CPU run on the same RK3588 board](../results/rk3588_cpu/) helps separate ordinary CPU-platform variation from conversion/NPU differences. Against Windows CPU, its mean absolute difference is `4.662e-8`, maximum difference is `1.371e-6`, and all six patch top-1 labels agree. This suggests the much larger NPU differences are not explained by moving the original ONNX CPU inference to ARM alone; it does not identify a particular conversion operation as the cause.
+An additional [ONNX CPU run on the same RK3588 board](https://github.com/kolentossa/elec5305-project-550374130/tree/main/results/rk3588_cpu) helps separate ordinary CPU-platform variation from conversion/NPU differences. Against Windows CPU, its mean absolute difference is `4.662e-8`, maximum difference is `1.371e-6`, and all six patch top-1 labels agree. This suggests the much larger NPU differences are not explained by moving the original ONNX CPU inference to ARM alone; it does not identify a particular conversion operation as the cause.
 
 The board's ONNX Runtime 1.16.3 returned 1,393 tiny negative values, with minimum `-5.9604645e-8`. The runner preserves these raw values and accepts score bounds with `1e-6` numerical tolerance; it does not clip them. Windows CPU and RK3588 NPU values were within the exact `[0, 1]` interval.
 

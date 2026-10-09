@@ -21,7 +21,7 @@ This workspace is separate from the existing person-tracking project. The system
 
 ## Recorded-audio pilot on 9 October 2026
 
-The six-scene recording experiment has now also run on **RK3588 NPU core 0**, using the same FP16 model, private runtime, audio files, threshold 0.2 and EMA factor 0.5 as the Windows reference. All **119 patches x 521 scores** were retained. The [board result folder](../results/initial_pilot_rk3588_npu/) contains scores, nominal intervals, metrics and the native inference log.
+The six-scene recording experiment has now also run on **RK3588 NPU core 0**, using the existing FP16 model and private runtime. It uses the same audio files, threshold 0.2 and EMA factor 0.5 as the Windows ONNX CPU reference. All **119 patches x 521 scores** were retained. The [board result folder](https://github.com/kolentossa/elec5305-project-550374130/tree/main/results/initial_pilot_rk3588_npu) contains scores, nominal intervals, metrics and the native inference log.
 
 Both raw thresholding and EMA produced recording-level **micro precision 100.0% and recall 85.7%**, with TP=6, FP=0 and FN=1. These counts refer to the presence of three labels in six controlled recordings. The mixed-scene horn was missed. This is not a temporal-boundary accuracy result or an unseen-recording benchmark.
 
