@@ -1,6 +1,12 @@
+---
+title: First YAMNet inference experiment
+---
+
 # First YAMNet inference experiment
 
 Date: 20 September 2026. Author: Mingze Li. Course: ELEC5305.
+
+**Follow-up:** the [9 October initial implementation report](initial_implementation.md) adds a controlled offline thresholding and smoothing pilot. This report records the earlier inference milestone.
 
 ## Objective and outcome
 

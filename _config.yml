@@ -1,0 +1,4 @@
+title: ELEC5305 Project
+description: Streaming urban sound event detection on RK3588 using pretrained YAMNet
+plugins:
+  - jekyll-relative-links

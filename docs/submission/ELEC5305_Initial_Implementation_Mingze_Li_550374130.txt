@@ -1,0 +1,20 @@
+Initial implementation and testing
+Streaming urban sound event detection on RK3588
+ELEC5305 | Mingze Li | Student ID 550374130 | 9 October 2026
+
+GitHub Project Site
+https://kolentossa.github.io/elec5305-project-550374130/
+
+Project description
+
+My project investigates how pretrained YAMNet scores can be converted into stable urban sound event detections. The target is a local RK3588 microphone prototype that reports sound classes and event intervals, including multiple sound classes. The main question is how temporal processing affects false alarms, fragmentation and detection delay.
+
+Implementation and preliminary results
+
+YAMNet inference has been implemented on Windows CPU and RK3588 CPU/NPU. The original smoke test retained all 6 x 521 class scores. Windows CPU and RK3588 NPU scores had a mean absolute difference of 0.001982 on the official sample; this is a single-sample numerical check.
+
+A new Windows CPU pilot processes six controlled scenes totalling 56 seconds, using three ESC-50 recordings of dog barking, a siren and a car horn, selected before inference. It saves 119 score patches, event intervals and plots. Independent thresholding at 0.2 is compared with causal exponential smoothing at alpha 0.5, using fixed illustrative parameters. Both methods produced one interval in each single-source scene, two in the sequential scene, and none in silence. In the mixed siren/horn scene, only the siren crossed the threshold; the horn reached 0.080, compared with 0.873 alone. Smoothing extended some nominal intervals by 0.48 seconds. Four unit checks passed.
+
+Limitations and next steps
+
+This small pilot reuses three recordings. Source insertion times are known, but audible event boundaries are unannotated; accuracy, F1 and live latency have not been measured. Next, I will evaluate on URBAN-SED, select parameters on its validation set, compare hysteresis and implement microphone streaming on RK3588. Code, results and reproduction instructions are linked from the project site.

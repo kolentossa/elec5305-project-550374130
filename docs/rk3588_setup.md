@@ -1,3 +1,7 @@
+---
+title: RK3588 first-run reproduction
+---
+
 # RK3588 first-run reproduction
 
 The first NPU run was completed on an Embedfire LubanCat-5 V2 (RK3588), Debian 11 aarch64, Linux 5.10.160, Python 3.9.2, and RKNPU driver 0.9.8. The project has its own directory and virtual environment:
