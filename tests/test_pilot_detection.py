@@ -16,13 +16,10 @@ class WindowSession:
     def __init__(self):
         self.calls = []
 
-    def get_inputs(self):
-        return [type("Input", (), {"name": "audio"})()]
-
-    def run(self, names, inputs):
-        self.calls.append(inputs["audio"].copy())
-        return [np.full((6, 521), len(self.calls), dtype=np.float32)
-                + np.arange(6, dtype=np.float32)[:, None] / 10]
+    def __call__(self, window):
+        self.calls.append(window.copy())
+        return (np.full((6, 521), len(self.calls), dtype=np.float32)
+                + np.arange(6, dtype=np.float32)[:, None] / 10)
 
 
 class PilotTests(unittest.TestCase):

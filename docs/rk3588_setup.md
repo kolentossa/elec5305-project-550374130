@@ -19,6 +19,39 @@ The first NPU run was completed on an Embedfire LubanCat-5 V2 (RK3588), Debian 1
 
 This workspace is separate from the existing person-tracking project. The system library `/usr/lib/librknnrt.so` remains unchanged.
 
+## Recorded-audio pilot on 9 October 2026
+
+The six-scene recording experiment has now also run on **RK3588 NPU core 0**, using the same FP16 model, private runtime, audio files, threshold 0.2 and EMA factor 0.5 as the Windows reference. All **119 patches x 521 scores** were retained. The [board result folder](../results/initial_pilot_rk3588_npu/) contains scores, nominal intervals, metrics and the native inference log.
+
+Both raw thresholding and EMA produced recording-level **micro precision 100.0% and recall 85.7%**, with TP=6, FP=0 and FN=1. These counts refer to the presence of three labels in six controlled recordings. The mixed-scene horn was missed. This is not a temporal-boundary accuracy result or an unseen-recording benchmark.
+
+The current code shares [rknn_backend.py](../scripts/rknn_backend.py) between the smoke test and the longer recording pilot. It uses the same private-library selection described below. Copy the updated scripts and the six locally prepared WAV files plus `manifest.json` into `scripts/` and `pilot_audio/` on the prepared board. The audio can be regenerated on the PC with `scripts/prepare_pilot_audio.py`.
+
+Run the recorded-audio pilot on that board:
+
+```bash
+cd /home/cat/projects/elec5305-yamnet-smoke
+OMP_NUM_THREADS=2 .venv/bin/python scripts/pilot_detection.py \
+  --assets yamnet \
+  --audio-dir pilot_audio \
+  --backend rknn \
+  --rknn-model yamnet/yamnet_3s.rknn \
+  --runtime-library lib/librknnrt.so \
+  --no-plots \
+  --output results/pilot-repeat
+.venv/bin/python scripts/evaluate_pilot.py results/pilot-repeat
+```
+
+`--no-plots` avoids adding Matplotlib to the board environment. After copying the result folder back to the PC, generate its plots from the saved **NPU scores**, without running model inference again:
+
+```powershell
+.\.venv\Scripts\python.exe scripts/plot_pilot_results.py results/initial_pilot_rk3588_npu
+```
+
+The recorded run and a second NPU run had identical score arrays, CSVs, event intervals and metrics. All six unit checks and `pip check` passed on the board. The shared runtime also reproduced the original NPU smoke-test scores exactly. See [verification.json](../results/initial_pilot_rk3588_npu/verification.json).
+
+The board clock showed **2 May 2026** during this **9 October 2026** session. `created_utc` and native log times are preserved; `experiment_date` records the session date. The experiment uses prerecorded files and makes no live-input timing claim.
+
 ## Repeat on the prepared board
 
 After logging into the board:
@@ -88,4 +121,4 @@ The [successful runtime log](../results/rk3588_npu/inference.log) confirms Runti
 
 [run.json](../results/rk3588_npu/run.json) records model and runtime hashes, board identity, package versions, and actual output shapes. [The first-run report](first_run.md) describes CPU/NPU numerical differences and padding. Mean top class agrees, but individual scores differ, so this is a successful deployment test rather than a claim of accuracy equivalence.
 
-The board clock was still set to April during the September session; raw timestamps are preserved and explained in the report. The one recorded runtime-call duration is not a streaming latency benchmark.
+The board clock was still set to April during the September session; raw timestamps are preserved and explained in the report. The one recorded runtime-call duration is not a repeated inference benchmark.

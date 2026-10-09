@@ -1,0 +1,166 @@
+{
+  "evaluation": "Recording-level multi-label micro precision and recall",
+  "backend": "Windows ONNX Runtime CPU",
+  "threshold": 0.2,
+  "ema_alpha": 0.5,
+  "labels": [
+    "dog_bark",
+    "siren",
+    "car_horn"
+  ],
+  "scene_count": 6,
+  "scene_label_pairs": 18,
+  "ground_truth": "A label is present if its source recording was inserted in the scene.",
+  "decision_rule": "A label is predicted if it has at least one nominal interval; repeated intervals count once.",
+  "aggregation": "Sum TP, FP and FN over recording-label pairs. Precision = TP/(TP+FP); recall = TP/(TP+FN).",
+  "undefined_metrics": "A zero denominator is reported as null, not as a perfect score.",
+  "limitations": "This small controlled pilot reuses three source recordings. It does not measure event boundary accuracy, event F1, live latency or generalisation to unseen recordings.",
+  "methods": {
+    "raw": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.8571428571428571
+    },
+    "ema": {
+      "tp": 6,
+      "fp": 0,
+      "fn": 1,
+      "precision": 1.0,
+      "recall": 0.8571428571428571
+    }
+  },
+  "scenes": [
+    {
+      "scene": "dog_only",
+      "expected": [
+        "dog_bark"
+      ],
+      "raw": {
+        "predicted": [
+          "dog_bark"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "ema": {
+        "predicted": [
+          "dog_bark"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    {
+      "scene": "siren_only",
+      "expected": [
+        "siren"
+      ],
+      "raw": {
+        "predicted": [
+          "siren"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "ema": {
+        "predicted": [
+          "siren"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    {
+      "scene": "horn_only",
+      "expected": [
+        "car_horn"
+      ],
+      "raw": {
+        "predicted": [
+          "car_horn"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      },
+      "ema": {
+        "predicted": [
+          "car_horn"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    {
+      "scene": "sequential",
+      "expected": [
+        "dog_bark",
+        "siren"
+      ],
+      "raw": {
+        "predicted": [
+          "dog_bark",
+          "siren"
+        ],
+        "tp": 2,
+        "fp": 0,
+        "fn": 0
+      },
+      "ema": {
+        "predicted": [
+          "dog_bark",
+          "siren"
+        ],
+        "tp": 2,
+        "fp": 0,
+        "fn": 0
+      }
+    },
+    {
+      "scene": "overlap",
+      "expected": [
+        "car_horn",
+        "siren"
+      ],
+      "raw": {
+        "predicted": [
+          "siren"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 1
+      },
+      "ema": {
+        "predicted": [
+          "siren"
+        ],
+        "tp": 1,
+        "fp": 0,
+        "fn": 1
+      }
+    },
+    {
+      "scene": "silence",
+      "expected": [],
+      "raw": {
+        "predicted": [],
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      },
+      "ema": {
+        "predicted": [],
+        "tp": 0,
+        "fp": 0,
+        "fn": 0
+      }
+    }
+  ]
+}

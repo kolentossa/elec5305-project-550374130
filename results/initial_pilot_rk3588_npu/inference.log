@@ -1,0 +1,30 @@
+dog_only: 17 patches, raw=1, EMA=1 intervals
+siren_only: 17 patches, raw=1, EMA=1 intervals
+horn_only: 17 patches, raw=1, EMA=1 intervals
+sequential: 30 patches, raw=2, EMA=2 intervals
+overlap: 21 patches, raw=1, EMA=1 intervals
+silence: 17 patches, raw=0, EMA=0 intervals
+I RKNN: [14:14:44.844] RKNN Runtime Information, librknnrt version: 2.3.2 (429f97ae6b@2025-04-09T09:09:27)
+I RKNN: [14:14:44.844] RKNN Driver Information, version: 0.9.8
+I RKNN: [14:14:44.844] RKNN Model Information, version: 6, toolkit version: 2.3.2(compiler version: 2.3.2 (@2025-04-03T08:26:16)), target: RKNPU v2, target platform: rk3588, framework name: ONNX, framework layout: NCHW, model inference type: static_shape
+W RKNN: [14:14:44.858] query RKNN_QUERY_INPUT_DYNAMIC_RANGE error, rknn model is static shape type, please export rknn with dynamic_shapes
+raw: TP=6, FP=0, FN=1, precision=1.0, recall=0.8571428571428571
+ema: TP=6, FP=0, FN=1, precision=1.0, recall=0.8571428571428571
+Saved results/initial_pilot_20261009_npu/metrics.json
+No broken requirements found.
+
+/home/cat/projects/elec5305-yamnet-smoke/.venv/lib/python3.9/site-packages/rknnlite/api/rknn_lite.py:41: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools<81.
+  import pkg_resources
+W rknn-toolkit-lite2 version: 2.3.2
+W Query dynamic range failed. Ret code: RKNN_ERR_MODEL_INVALID. (If it is a static shape RKNN model, please ignore the above warning message.)
+test_empty_silence_metrics_are_undefined (test_evaluate_pilot.PilotMetricTests) ... ok
+test_multilabel_counts_ignore_repeated_intervals (test_evaluate_pilot.PilotMetricTests) ... ok
+test_long_audio_retains_nonduplicated_patches_and_pads_tail (test_pilot_detection.PilotTests) ... ok
+test_no_event (test_pilot_detection.PilotTests) ... ok
+test_separate_events_and_open_tail (test_pilot_detection.PilotTests) ... ok
+test_smoothing_uses_previous_scores (test_pilot_detection.PilotTests) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.021s
+
+OK

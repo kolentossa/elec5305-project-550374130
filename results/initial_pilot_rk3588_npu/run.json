@@ -1,0 +1,240 @@
+{
+  "experiment_date": "2026-10-09",
+  "created_utc": "2026-05-02T06:14:45.446038+00:00",
+  "backend": "RK3588 RKNN Runtime / NPU_CORE_0",
+  "python": "3.9.2",
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.13.1",
+    "soundfile": "0.13.1",
+    "onnxruntime": "1.16.3",
+    "rknn-toolkit-lite2": "2.3.2"
+  },
+  "model_sha256": "47363761b27c34fe1f9da8177c40589e9714b422e129f3210be730338f8cf72c",
+  "class_map_sha256": "108826ee87f1c9ef2c907e73dadfb9444141fda2069f742b568bd3a93c71da1d",
+  "mapping": {
+    "dog_bark": {
+      "yamnet_name": "Bark",
+      "index": 70
+    },
+    "siren": {
+      "yamnet_name": "Siren",
+      "index": 390
+    },
+    "car_horn": {
+      "yamnet_name": "Vehicle horn, car horn, honking",
+      "index": 302
+    }
+  },
+  "threshold": 0.2,
+  "ema_alpha": 0.5,
+  "parameter_selection": "Fixed illustrative defaults; not tuned or selected by measured performance",
+  "window_seconds": 3.0,
+  "window_step_seconds": 2.4,
+  "patch_hop_seconds": 0.48,
+  "patch_audio_context_seconds": 0.9750000000000001,
+  "note": "Recorded-audio controlled pilot. Event intervals use nominal patch-start bins, not annotated onset/offset times. Tail padding is included and flagged. Source placements are not strong event annotations. Recording-level precision/recall are evaluated separately; event boundary accuracy is not measured.",
+  "scenes": [
+    {
+      "scene": "dog_only",
+      "duration_s": 8.0,
+      "patch_count": 17,
+      "padded_patch_count": 2,
+      "max_raw_scores": {
+        "dog_bark": 0.74609375,
+        "siren": 0.0018310546875,
+        "car_horn": 0.0018310546875
+      },
+      "events": {
+        "raw": {
+          "dog_bark": [
+            [
+              1.92,
+              2.88
+            ]
+          ],
+          "siren": [],
+          "car_horn": []
+        },
+        "ema": {
+          "dog_bark": [
+            [
+              1.92,
+              3.36
+            ]
+          ],
+          "siren": [],
+          "car_horn": []
+        }
+      }
+    },
+    {
+      "scene": "siren_only",
+      "duration_s": 8.0,
+      "patch_count": 17,
+      "padded_patch_count": 2,
+      "max_raw_scores": {
+        "dog_bark": 0.0018310546875,
+        "siren": 0.8505859375,
+        "car_horn": 0.09246826171875
+      },
+      "events": {
+        "raw": {
+          "dog_bark": [],
+          "siren": [
+            [
+              1.92,
+              7.2
+            ]
+          ],
+          "car_horn": []
+        },
+        "ema": {
+          "dog_bark": [],
+          "siren": [
+            [
+              1.92,
+              7.68
+            ]
+          ],
+          "car_horn": []
+        }
+      }
+    },
+    {
+      "scene": "horn_only",
+      "duration_s": 8.0,
+      "patch_count": 17,
+      "padded_patch_count": 2,
+      "max_raw_scores": {
+        "dog_bark": 0.0018310546875,
+        "siren": 0.115478515625,
+        "car_horn": 0.87646484375
+      },
+      "events": {
+        "raw": {
+          "dog_bark": [],
+          "siren": [],
+          "car_horn": [
+            [
+              1.44,
+              3.36
+            ]
+          ]
+        },
+        "ema": {
+          "dog_bark": [],
+          "siren": [],
+          "car_horn": [
+            [
+              1.92,
+              3.84
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "scene": "sequential",
+      "duration_s": 14.0,
+      "patch_count": 30,
+      "padded_patch_count": 2,
+      "max_raw_scores": {
+        "dog_bark": 0.74169921875,
+        "siren": 0.890625,
+        "car_horn": 0.1519775390625
+      },
+      "events": {
+        "raw": {
+          "dog_bark": [
+            [
+              0.96,
+              1.92
+            ]
+          ],
+          "siren": [
+            [
+              7.68,
+              12.96
+            ]
+          ],
+          "car_horn": []
+        },
+        "ema": {
+          "dog_bark": [
+            [
+              0.96,
+              2.4
+            ]
+          ],
+          "siren": [
+            [
+              7.68,
+              13.44
+            ]
+          ],
+          "car_horn": []
+        }
+      }
+    },
+    {
+      "scene": "overlap",
+      "duration_s": 10.0,
+      "patch_count": 21,
+      "padded_patch_count": 2,
+      "max_raw_scores": {
+        "dog_bark": 0.0018310546875,
+        "siren": 0.900390625,
+        "car_horn": 0.07769775390625
+      },
+      "events": {
+        "raw": {
+          "dog_bark": [],
+          "siren": [
+            [
+              0.96,
+              5.76
+            ]
+          ],
+          "car_horn": []
+        },
+        "ema": {
+          "dog_bark": [],
+          "siren": [
+            [
+              0.96,
+              6.24
+            ]
+          ],
+          "car_horn": []
+        }
+      }
+    },
+    {
+      "scene": "silence",
+      "duration_s": 8.0,
+      "patch_count": 17,
+      "padded_patch_count": 2,
+      "max_raw_scores": {
+        "dog_bark": 0.0018310546875,
+        "siren": 0.0018310546875,
+        "car_horn": 0.0018310546875
+      },
+      "events": {
+        "raw": {
+          "dog_bark": [],
+          "siren": [],
+          "car_horn": []
+        },
+        "ema": {
+          "dog_bark": [],
+          "siren": [],
+          "car_horn": []
+        }
+      }
+    }
+  ],
+  "converted_model_sha256": "03a415d717c330a151beeeab6f6dd5e55d47d7461463395ccc07017169c4f9b8",
+  "runtime_library_sha256": "d31fc19c85b85f6091b2bd0f6af9d962d5264a4e410bfb536402ec92bac738e8",
+  "board_model": "Embedfire LubanCat-5 V2"
+}

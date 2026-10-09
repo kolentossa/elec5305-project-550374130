@@ -1,0 +1,13 @@
+scene,method,label,nominal_start_s,nominal_end_s
+dog_only,raw,dog_bark,1.92,2.88
+dog_only,ema,dog_bark,1.92,3.36
+siren_only,raw,siren,1.92,7.2
+siren_only,ema,siren,1.92,7.68
+horn_only,raw,car_horn,1.44,3.36
+horn_only,ema,car_horn,1.92,3.84
+sequential,raw,dog_bark,0.96,1.92
+sequential,raw,siren,7.68,12.96
+sequential,ema,dog_bark,0.96,2.4
+sequential,ema,siren,7.68,13.44
+overlap,raw,siren,0.96,5.76
+overlap,ema,siren,0.96,6.24

@@ -23,6 +23,8 @@ import onnxruntime as ort
 import soundfile as sf
 from scipy.signal import resample
 
+from rknn_backend import load_rknn_runtime
+
 
 ROOT = Path(__file__).resolve().parents[1]
 UPSTREAM_COMMIT = "bad6c7334531becaf90a561988519b7bec34d0ab"
@@ -145,37 +147,10 @@ def main():
         output_map = dict(zip((item.name for item in session.get_outputs()), outputs))
         providers = session.get_providers()
     else:
-        from rknnlite.api import RKNNLite
-        import rknnlite.api.rknn_runtime as rknn_runtime
-
-        original_locator = None
-        if args.runtime_library:
-            if importlib.metadata.version("rknn-toolkit-lite2") != "2.3.2":
-                raise RuntimeError("Private library adapter is verified only with RKNN Lite 2.3.2")
-            # Lite 2.3.2 prioritises a hard-coded system path. Adapt its path
-            # locator for this runtime instance, restoring it after release.
-            original_locator = rknn_runtime.RKNNRuntime._get_rknn_api_lib_path
-            rknn_runtime.RKNNRuntime._get_rknn_api_lib_path = (
-                lambda self: str(args.runtime_library.resolve())
-            )
-
-        runtime = RKNNLite(verbose=False)
-        try:
-            if runtime.load_rknn(str(args.rknn_model)) != 0:
-                raise RuntimeError("Cannot load RKNN model")
-            if runtime.init_runtime(core_mask=RKNNLite.NPU_CORE_0) != 0:
-                raise RuntimeError("Cannot initialise RK3588 runtime")
-            if args.runtime_library:
-                maps = Path("/proc/self/maps").read_text()
-                if str(args.runtime_library.resolve()) not in maps:
-                    raise RuntimeError("Requested private RKNN library was not loaded")
+        with load_rknn_runtime(args.rknn_model, args.runtime_library) as runtime:
             start = time.perf_counter()
             outputs = runtime.inference(inputs=[audio])
             elapsed = time.perf_counter() - start
-        finally:
-            runtime.release()
-            if original_locator is not None:
-                rknn_runtime.RKNNRuntime._get_rknn_api_lib_path = original_locator
         shapes = {(6, 521): "scores", (6, 1024): "embeddings",
                   (336, 64): "log_mel_spectrogram"}
         if outputs is None or len(outputs) != 3:

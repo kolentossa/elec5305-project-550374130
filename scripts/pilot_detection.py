@@ -5,17 +5,15 @@ import csv
 import importlib.metadata
 import json
 import platform
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
-from matplotlib.patches import Patch
 import numpy as np
 import onnxruntime as ort
 import soundfile as sf
+
+from rknn_backend import load_rknn_runtime
 
 from yamnet_smoke_test import (
     INPUT_SAMPLES, PATCH_AUDIO_SECONDS, PATCH_HOP_SECONDS,
@@ -34,14 +32,29 @@ PATCHES_PER_WINDOW = 5
 WINDOW_STEP = int(PATCHES_PER_WINDOW * PATCH_HOP_SECONDS * SAMPLE_RATE)
 
 
-def infer_scene(session, audio):
+@contextmanager
+def open_model(args):
+    if args.backend == "onnx":
+        session = ort.InferenceSession(str(args.assets / "yamnet_3s.onnx"),
+                                       providers=["CPUExecutionProvider"])
+        input_name = session.get_inputs()[0].name
+        yield lambda window: session.run(["scores"], {input_name: window})[0]
+    else:
+        with load_rknn_runtime(args.rknn_model, args.runtime_library) as runtime:
+            def infer_window(window):
+                outputs = runtime.inference(inputs=[window])
+                return next(output for output in outputs if output.shape == (6, 521))
+            yield infer_window
+
+
+def infer_scene(infer_window, audio):
     """Advance 2.4 s at a time; discard each window's internally padded patch 5."""
     rows = []
     for first in range(0, len(audio), WINDOW_STEP):
         window = np.zeros((1, INPUT_SAMPLES), dtype=np.float32)
         chunk = audio[first:first + INPUT_SAMPLES]
         window[0, :len(chunk)] = chunk
-        scores = session.run(["scores"], {session.get_inputs()[0].name: window})[0]
+        scores = infer_window(window)
         for patch in range(PATCHES_PER_WINDOW):
             sample_start = first + round(patch * PATCH_HOP_SECONDS * SAMPLE_RATE)
             if sample_start < len(audio):
@@ -75,6 +88,12 @@ def find_events(scores, threshold, duration):
 
 
 def plot_scene(path, audio, raw, smoothed, placements, threshold, events):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+
     duration = len(audio) / SAMPLE_RATE
     times = np.arange(len(raw)) * PATCH_HOP_SECONDS
     figure, axes = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
@@ -120,55 +139,59 @@ def main():
     parser.add_argument("--output", type=Path, default=ROOT / "results/initial_pilot")
     parser.add_argument("--threshold", type=float, default=0.2)
     parser.add_argument("--alpha", type=float, default=0.5)
+    parser.add_argument("--backend", choices=["onnx", "rknn"], default="onnx")
+    parser.add_argument("--rknn-model", type=Path)
+    parser.add_argument("--runtime-library", type=Path)
+    parser.add_argument("--no-plots", action="store_true", help="Save scores without requiring Matplotlib on the board")
     args = parser.parse_args()
     ensure_assets(args.assets)
     labels = load_labels(args.assets / "yamnet_class_map.txt")
     columns = [labels.index(name) for name in CLASS_NAMES.values()]
-    session = ort.InferenceSession(str(args.assets / "yamnet_3s.onnx"),
-                                   providers=["CPUExecutionProvider"])
     manifest = json.loads((args.audio_dir / "manifest.json").read_text())
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
 
     summaries = []
     event_rows = []
-    for scene in manifest["scenes"]:
-        audio, rate = sf.read(args.audio_dir / scene["filename"], dtype="float32")
-        scores = infer_scene(session, audio)
-        raw = scores[:, columns]
-        smoothed = smooth_scores(raw, args.alpha)
-        np.save(args.output / f"{scene['name']}_scores.npy", scores)
-        times = np.arange(len(raw)) * PATCH_HOP_SECONDS
-        with (args.output / f"{scene['name']}_scores.csv").open("w", newline="") as stream:
-            writer = csv.writer(stream)
-            writer.writerow(["patch_start_s", "context_end_s", "contains_padding"]
-                            + list(CLASS_NAMES) + [f"{name}_ema" for name in CLASS_NAMES])
-            for index, time in enumerate(times):
-                context_end = time + PATCH_AUDIO_SECONDS
-                writer.writerow([f"{time:.2f}", f"{context_end:.3f}", int(context_end > scene["duration_s"])]
-                                + raw[index].tolist() + smoothed[index].tolist())
+    with open_model(args) as infer_window:
+        for scene in manifest["scenes"]:
+            audio, rate = sf.read(args.audio_dir / scene["filename"], dtype="float32")
+            scores = infer_scene(infer_window, audio)
+            raw = scores[:, columns]
+            smoothed = smooth_scores(raw, args.alpha)
+            np.save(args.output / f"{scene['name']}_scores.npy", scores)
+            times = np.arange(len(raw)) * PATCH_HOP_SECONDS
+            with (args.output / f"{scene['name']}_scores.csv").open("w", newline="") as stream:
+                writer = csv.writer(stream)
+                writer.writerow(["patch_start_s", "context_end_s", "contains_padding"]
+                                + list(CLASS_NAMES) + [f"{name}_ema" for name in CLASS_NAMES])
+                for index, time in enumerate(times):
+                    context_end = time + PATCH_AUDIO_SECONDS
+                    writer.writerow([f"{time:.2f}", f"{context_end:.3f}", int(context_end > scene["duration_s"])]
+                                    + raw[index].tolist() + smoothed[index].tolist())
 
-        events = {}
-        for method, values in [("raw", raw), ("ema", smoothed)]:
-            events[method] = {}
-            for column, label in enumerate(CLASS_NAMES):
-                intervals = find_events(values[:, column], args.threshold, scene["duration_s"])
-                events[method][label] = intervals
-                event_rows.extend([scene["name"], method, label, start, end]
-                                  for start, end in intervals)
-        plot_scene(args.output / f"{scene['name']}.png", audio, raw, smoothed,
-                   scene["source_placements"], args.threshold, events)
-        summary = {
-            "scene": scene["name"], "duration_s": len(audio) / rate,
-            "patch_count": len(scores),
-            "padded_patch_count": int(np.sum(times + PATCH_AUDIO_SECONDS > len(audio) / rate)),
-            "max_raw_scores": dict(zip(CLASS_NAMES, raw.max(axis=0).tolist())),
-            "events": events,
-        }
-        summaries.append(summary)
-        print(f"{scene['name']}: {len(scores)} patches, "
-              f"raw={sum(map(len, events['raw'].values()))}, "
-              f"EMA={sum(map(len, events['ema'].values()))} intervals")
+            events = {}
+            for method, values in [("raw", raw), ("ema", smoothed)]:
+                events[method] = {}
+                for column, label in enumerate(CLASS_NAMES):
+                    intervals = find_events(values[:, column], args.threshold, scene["duration_s"])
+                    events[method][label] = intervals
+                    event_rows.extend([scene["name"], method, label, start, end]
+                                      for start, end in intervals)
+            if not args.no_plots:
+                plot_scene(args.output / f"{scene['name']}.png", audio, raw, smoothed,
+                           scene["source_placements"], args.threshold, events)
+            summary = {
+                "scene": scene["name"], "duration_s": len(audio) / rate,
+                "patch_count": len(scores),
+                "padded_patch_count": int(np.sum(times + PATCH_AUDIO_SECONDS > len(audio) / rate)),
+                "max_raw_scores": dict(zip(CLASS_NAMES, raw.max(axis=0).tolist())),
+                "events": events,
+            }
+            summaries.append(summary)
+            print(f"{scene['name']}: {len(scores)} patches, "
+                  f"raw={sum(map(len, events['raw'].values()))}, "
+                  f"EMA={sum(map(len, events['ema'].values()))} intervals")
 
     with (args.output / "events.csv").open("w", newline="") as stream:
         writer = csv.writer(stream)
@@ -177,10 +200,11 @@ def main():
     run = {
         "experiment_date": "2026-10-09",
         "created_utc": datetime.now(timezone.utc).isoformat(),
-        "backend": "Windows ONNX Runtime CPU",
+        "backend": (f"{platform.system()} ONNX Runtime CPU" if args.backend == "onnx"
+                    else "RK3588 RKNN Runtime / NPU_CORE_0"),
         "python": platform.python_version(),
         "packages": {name: importlib.metadata.version(name)
-                     for name in ["numpy", "scipy", "soundfile", "onnxruntime", "matplotlib"]},
+                     for name in ["numpy", "scipy", "soundfile", "onnxruntime"]},
         "model_sha256": sha256(args.assets / "yamnet_3s.onnx"),
         "class_map_sha256": sha256(args.assets / "yamnet_class_map.txt"),
         "mapping": {label: {"yamnet_name": name, "index": index}
@@ -190,9 +214,17 @@ def main():
         "window_seconds": 3.0, "window_step_seconds": 2.4,
         "patch_hop_seconds": PATCH_HOP_SECONDS,
         "patch_audio_context_seconds": PATCH_AUDIO_SECONDS,
-        "note": "Offline controlled pilot. Event intervals use nominal patch-start bins, not measured onset/offset times or live emission times. Tail padding is included and flagged. Source placements are not strong event annotations. No accuracy, F1 or streaming latency is measured.",
+        "note": "Recorded-audio controlled pilot. Event intervals use nominal patch-start bins, not annotated onset/offset times. Tail padding is included and flagged. Source placements are not strong event annotations. Recording-level precision/recall are evaluated separately; event boundary accuracy is not measured.",
         "scenes": summaries,
     }
+    if not args.no_plots:
+        run["packages"]["matplotlib"] = importlib.metadata.version("matplotlib")
+    if args.backend == "rknn":
+        run["packages"]["rknn-toolkit-lite2"] = importlib.metadata.version("rknn-toolkit-lite2")
+        run["converted_model_sha256"] = sha256(args.rknn_model)
+        if args.runtime_library:
+            run["runtime_library_sha256"] = sha256(args.runtime_library)
+        run["board_model"] = Path("/proc/device-tree/model").read_text().rstrip("\x00")
     (args.output / "run.json").write_text(json.dumps(run, indent=2) + "\n", encoding="utf-8")
 
 

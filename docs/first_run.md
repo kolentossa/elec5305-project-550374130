@@ -14,7 +14,7 @@ Run Rockchip's pretrained `yamnet_3s.onnx` with the official sample audio and re
 
 **Completed on Windows CPU:** `(6, 521)` float32 scores were saved and checked against the pinned official Python example. All 3,126 values match exactly in this environment. The official clip-level calculation, `scores.mean(axis=0).argmax()`, gives index 67, **Animal**.
 
-**Also completed on RK3588 NPU:** an independent project environment on a LubanCat-5 V2 ran the converted FP16 model using RKNN Toolkit/Lite/Runtime 2.3.2 and driver 0.9.8. All six patches and 521 scores per patch were preserved. See [board setup](rk3588_setup.md) and [board results](../results/rk3588_npu/). URBAN-SED evaluation and streaming event detection have not been implemented.
+**Also completed on RK3588 NPU:** an independent project environment on a LubanCat-5 V2 ran the converted FP16 model using RKNN Toolkit/Lite/Runtime 2.3.2 and driver 0.9.8. All six patches and 521 scores per patch were preserved. See [board setup](rk3588_setup.md) and [board results](../results/rk3588_npu/). Annotated URBAN-SED event detection evaluation had not been implemented at this milestone.
 
 ## Sources and environment
 
@@ -69,7 +69,7 @@ YAMNet uses 96 feature frames with a 10 ms frame hop and a 25 ms STFT window. Co
 
 The exported model pads internally to complete its final patch. The first-run CSV flags that patch. When a custom input is shorter than 3 seconds, the runner additionally pads the input and marks every patch whose context extends beyond real audio.
 
-These are offline waveform-support intervals, **not times at which a streaming detector could have emitted a prediction**. In particular, a run that waits for a 3-second buffer cannot claim its first prediction was available at 0 seconds. Future latency measurements must account for buffering, model context, and event postprocessing.
+These are offline waveform-support intervals, not manually annotated event boundaries. The model processes a three-second input segment; a nominal patch start at 0 seconds describes that patch's waveform support. Runtime-call durations and nominal patch times are separate measurements.
 
 ## Reproduction
 

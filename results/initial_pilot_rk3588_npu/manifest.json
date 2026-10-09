@@ -1,0 +1,124 @@
+{
+  "dataset": "Controlled pilot constructed from ESC-50",
+  "esc50_commit": "33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6",
+  "selection": "Fold 4, lexicographically first filename in dog, siren and car_horn; chosen before inference",
+  "sample_rate_hz": 16000,
+  "note": "Source placements are not manually annotated audible event boundaries. No URBAN-SED examples are used.",
+  "sources": [
+    {
+      "label": "dog_bark",
+      "filename": "4-182395-A-0.wav",
+      "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/audio/4-182395-A-0.wav",
+      "sha256": "c249bcb8ef81d12516ad17c8a77f88c01952cdf70b9413732af5fb8b803f9c7d",
+      "sample_rate_hz": 44100,
+      "duration_s": 5.0
+    },
+    {
+      "label": "siren",
+      "filename": "4-102871-A-42.wav",
+      "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/audio/4-102871-A-42.wav",
+      "sha256": "9dabae27ebcd55cc16ea57e813fc1984ec444159b62f246c0399cb4f920454ea",
+      "sample_rate_hz": 44100,
+      "duration_s": 5.0
+    },
+    {
+      "label": "car_horn",
+      "filename": "4-175845-A-43.wav",
+      "url": "https://raw.githubusercontent.com/karolpiczak/ESC-50/33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6/audio/4-175845-A-43.wav",
+      "sha256": "aeaf26bd07b54964985f7c5726b2724f57b9912b6e70c0af2f8bf3758ca0f18c",
+      "sample_rate_hz": 44100,
+      "duration_s": 5.0
+    }
+  ],
+  "scenes": [
+    {
+      "name": "dog_only",
+      "filename": "dog_only.wav",
+      "duration_s": 8,
+      "sha256": "4cd8c27f2caa5399c61754c0199e9ca482324716cf73b8e05aefe5169348525c",
+      "source_placements": [
+        {
+          "label": "dog_bark",
+          "start_s": 2,
+          "end_s": 7.0,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "siren_only",
+      "filename": "siren_only.wav",
+      "duration_s": 8,
+      "sha256": "c2c920ba29f05efebba5e66ec7cb83daaa43df5a9a672b9fe1fa264f059bcefb",
+      "source_placements": [
+        {
+          "label": "siren",
+          "start_s": 2,
+          "end_s": 7.0,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "horn_only",
+      "filename": "horn_only.wav",
+      "duration_s": 8,
+      "sha256": "decd2fc7581aa0be3d6cc8758d8137cdbd5f936eef722c93fe51644c19f81b46",
+      "source_placements": [
+        {
+          "label": "car_horn",
+          "start_s": 2,
+          "end_s": 7.0,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "sequential",
+      "filename": "sequential.wav",
+      "duration_s": 14,
+      "sha256": "3c92f849a53aafca2cb9cd0a6084080ed7fb3053920405993da542a3cb9af42d",
+      "source_placements": [
+        {
+          "label": "dog_bark",
+          "start_s": 1,
+          "end_s": 6.0,
+          "gain": 1.0
+        },
+        {
+          "label": "siren",
+          "start_s": 8,
+          "end_s": 13.0,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "overlap",
+      "filename": "overlap.wav",
+      "duration_s": 10,
+      "sha256": "93646d860c9ec6e9ab269f74ce73a48ad3691d21ec31cef2f7c62400b834e6d0",
+      "source_placements": [
+        {
+          "label": "siren",
+          "start_s": 1,
+          "end_s": 6.0,
+          "gain": 0.5
+        },
+        {
+          "label": "car_horn",
+          "start_s": 3,
+          "end_s": 8.0,
+          "gain": 0.5
+        }
+      ]
+    },
+    {
+      "name": "silence",
+      "filename": "silence.wav",
+      "duration_s": 8,
+      "sha256": "c3a6650d6f76aed80175395bb9d387df1b88b817c35fed2c59d348f406d10956",
+      "source_placements": []
+    }
+  ]
+}

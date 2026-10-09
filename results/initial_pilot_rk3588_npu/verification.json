@@ -1,0 +1,11 @@
+{
+  "experiment_date": "2026-10-09",
+  "recordings_sha256_match_windows_reference": true,
+  "repeat_score_array_equality": true,
+  "repeat_events_and_metrics_equality": true,
+  "csv_score_columns_match_npy": true,
+  "original_npu_smoke_score_equality_after_runtime_refactor": true,
+  "unit_tests_passed_on_board": 6,
+  "pip_check": "No broken requirements found",
+  "board_clock_note": "The board clock showed 2 May 2026 during the 9 October 2026 session. created_utc and native log times are preserved from the device."
+}
