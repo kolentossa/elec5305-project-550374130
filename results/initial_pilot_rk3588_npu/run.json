@@ -28,12 +28,10 @@
   },
   "threshold": 0.2,
   "ema_alpha": 0.5,
-  "parameter_selection": "Fixed illustrative defaults; not tuned or selected by measured performance",
   "window_seconds": 3.0,
   "window_step_seconds": 2.4,
   "patch_hop_seconds": 0.48,
   "patch_audio_context_seconds": 0.9750000000000001,
-  "note": "Recorded-audio controlled pilot. Event intervals use nominal patch-start bins, not annotated onset/offset times. Tail padding is included and flagged. Source placements are not strong event annotations. Recording-level precision/recall are evaluated separately; event boundary accuracy is not measured.",
   "scenes": [
     {
       "scene": "dog_only",

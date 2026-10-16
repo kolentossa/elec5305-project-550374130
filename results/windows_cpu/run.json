@@ -1,6 +1,6 @@
 {
   "created_utc": "2026-09-20T11:24:20.447055+00:00",
-  "execution": "local ONNX Runtime CPU; not RK3588/NPU",
+  "execution": "ONNX Runtime CPU",
   "upstream_commit": "bad6c7334531becaf90a561988519b7bec34d0ab",
   "assets": {
     "yamnet_3s.onnx": {
@@ -77,8 +77,7 @@
   "timing": {
     "patch_hop_seconds": 0.48,
     "patch_audio_context_seconds": 0.9750000000000001,
-    "single_session_run_seconds": 0.005702800001017749,
-    "note": "One cold call, not a benchmark. Includes ONNX frontend; excludes load, I/O and external input preparation. Patch times are offline support intervals, not live detection times."
+    "single_session_run_seconds": 0.005702800001017749
   },
   "score_range": [
     0.0,

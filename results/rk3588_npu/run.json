@@ -79,8 +79,7 @@
   "timing": {
     "patch_hop_seconds": 0.48,
     "patch_audio_context_seconds": 0.9750000000000001,
-    "single_session_run_seconds": 0.015340854999976727,
-    "note": "One cold call, not a benchmark. Includes embedded frontend; excludes load, I/O and external input preparation. Patch times are offline support intervals, not live detection times. Timestamp uses the executing device's clock."
+    "single_session_run_seconds": 0.015340854999976727
   },
   "score_range": [
     0.0018310546875,

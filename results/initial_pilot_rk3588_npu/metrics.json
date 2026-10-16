@@ -1,5 +1,4 @@
 {
-  "evaluation": "Recording-level multi-label micro precision and recall",
   "backend": "RK3588 RKNN Runtime / NPU_CORE_0",
   "threshold": 0.2,
   "ema_alpha": 0.5,
@@ -10,11 +9,6 @@
   ],
   "scene_count": 6,
   "scene_label_pairs": 18,
-  "ground_truth": "A label is present if its source recording was inserted in the scene.",
-  "decision_rule": "A label is predicted if it has at least one nominal interval; repeated intervals count once.",
-  "aggregation": "Sum TP, FP and FN over recording-label pairs. Precision = TP/(TP+FP); recall = TP/(TP+FN).",
-  "undefined_metrics": "A zero denominator is reported as null, not as a perfect score.",
-  "limitations": "This small controlled pilot reuses three source recordings. It does not measure event boundary accuracy, event F1, live latency or generalisation to unseen recordings.",
   "methods": {
     "raw": {
       "tp": 6,

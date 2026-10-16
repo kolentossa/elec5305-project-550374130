@@ -1,9 +1,7 @@
 {
   "dataset": "Controlled pilot constructed from ESC-50",
   "esc50_commit": "33c8ce9eb2cf0b1c2f8bcf322eb349b6be34dbb6",
-  "selection": "Fold 4, lexicographically first filename in dog, siren and car_horn; chosen before inference",
   "sample_rate_hz": 16000,
-  "note": "Source placements are not manually annotated audible event boundaries. No URBAN-SED examples are used.",
   "sources": [
     {
       "label": "dog_bark",

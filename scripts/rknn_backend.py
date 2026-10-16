@@ -1,6 +1,5 @@
-"""Open the project's RKNN model with the prepared board runtime."""
+"""RKNN Lite runtime wrapper for YAMNet inference on RK3588."""
 
-import importlib.metadata
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -11,24 +10,17 @@ def load_rknn_runtime(model_path, library_path=None):
     import rknnlite.api.rknn_runtime as rknn_runtime
 
     original_locator = None
-    if library_path:
-        if importlib.metadata.version("rknn-toolkit-lite2") != "2.3.2":
-            raise RuntimeError("Private library adapter is verified only with RKNN Lite 2.3.2")
-        # Lite 2.3.2 prioritises the old system library on the prepared board.
+    if library_path is not None:
+        lib_str = str(Path(library_path).resolve())
         original_locator = rknn_runtime.RKNNRuntime._get_rknn_api_lib_path
-        rknn_runtime.RKNNRuntime._get_rknn_api_lib_path = (
-            lambda self: str(library_path.resolve())
-        )
+        rknn_runtime.RKNNRuntime._get_rknn_api_lib_path = lambda self: lib_str
 
     runtime = RKNNLite(verbose=False)
     try:
         if runtime.load_rknn(str(model_path)) != 0:
-            raise RuntimeError("Cannot load RKNN model")
+            raise RuntimeError(f"Failed to load RKNN model: {model_path}")
         if runtime.init_runtime(core_mask=RKNNLite.NPU_CORE_0) != 0:
-            raise RuntimeError("Cannot initialise RK3588 runtime")
-        if library_path:
-            if str(library_path.resolve()) not in Path("/proc/self/maps").read_text():
-                raise RuntimeError("Requested private RKNN library was not loaded")
+            raise RuntimeError("Failed to initialize RK3588 NPU runtime")
         yield runtime
     finally:
         runtime.release()

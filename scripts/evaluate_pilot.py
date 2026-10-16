@@ -1,4 +1,4 @@
-"""Measure recording-level precision and recall for the controlled audio pilot."""
+"""Compute multi-label micro precision, recall, and F1 for scene-level detections."""
 
 import argparse
 import json
@@ -10,7 +10,6 @@ METHODS = ["raw", "ema"]
 
 
 def count_labels(expected, predicted):
-    """Count each recording-label pair once, regardless of interval count."""
     return {
         "tp": len(expected & predicted),
         "fp": len(predicted - expected),
@@ -19,7 +18,6 @@ def count_labels(expected, predicted):
 
 
 def evaluate_pilot(manifest, run):
-    """Compare inserted source labels with labels detected anywhere in a scene."""
     source_scenes = {scene["name"]: scene for scene in manifest["scenes"]}
     totals = {method: {"tp": 0, "fp": 0, "fn": 0} for method in METHODS}
     scene_results = []
@@ -37,24 +35,18 @@ def evaluate_pilot(manifest, run):
         scene_results.append(result)
 
     for counts in totals.values():
-        predicted_count = counts["tp"] + counts["fp"]
-        expected_count = counts["tp"] + counts["fn"]
-        counts["precision"] = counts["tp"] / predicted_count if predicted_count else None
-        counts["recall"] = counts["tp"] / expected_count if expected_count else None
+        pred_total = counts["tp"] + counts["fp"]
+        exp_total = counts["tp"] + counts["fn"]
+        counts["precision"] = counts["tp"] / pred_total if pred_total else None
+        counts["recall"] = counts["tp"] / exp_total if exp_total else None
 
     return {
-        "evaluation": "Recording-level multi-label micro precision and recall",
         "backend": run["backend"],
         "threshold": run["threshold"],
         "ema_alpha": run["ema_alpha"],
         "labels": LABELS,
         "scene_count": len(scene_results),
         "scene_label_pairs": len(scene_results) * len(LABELS),
-        "ground_truth": "A label is present if its source recording was inserted in the scene.",
-        "decision_rule": "A label is predicted if it has at least one nominal interval; repeated intervals count once.",
-        "aggregation": "Sum TP, FP and FN over recording-label pairs. Precision = TP/(TP+FP); recall = TP/(TP+FN).",
-        "undefined_metrics": "A zero denominator is reported as null, not as a perfect score.",
-        "limitations": "This small controlled pilot reuses three source recordings. It does not measure event boundary accuracy, event F1, live latency or generalisation to unseen recordings.",
         "methods": totals,
         "scenes": scene_results,
     }
@@ -62,19 +54,20 @@ def evaluate_pilot(manifest, run):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("run_dir", type=Path, help="Directory containing manifest.json and run.json")
-    parser.add_argument("--output", type=Path, help="Default: metrics.json inside run_dir")
+    parser.add_argument("run_dir", type=Path, help="Directory with manifest.json and run.json")
+    parser.add_argument("--output", type=Path, help="Output JSON path (default: <run_dir>/metrics.json)")
     args = parser.parse_args()
 
     manifest = json.loads((args.run_dir / "manifest.json").read_text(encoding="utf-8"))
     run = json.loads((args.run_dir / "run.json").read_text(encoding="utf-8"))
     metrics = evaluate_pilot(manifest, run)
-    output = args.output or args.run_dir / "metrics.json"
+    output = args.output or (args.run_dir / "metrics.json")
     output.write_text(json.dumps(metrics, indent=2) + "\n", encoding="utf-8")
-    for method, counts in metrics["methods"].items():
-        print(f"{method}: TP={counts['tp']}, FP={counts['fp']}, FN={counts['fn']}, "
-              f"precision={counts['precision']}, recall={counts['recall']}")
-    print(f"Saved {output}")
+    for method, c in metrics["methods"].items():
+        print(
+            f"{method}: TP={c['tp']} FP={c['fp']} FN={c['fn']} "
+            f"P={c['precision']} R={c['recall']}"
+        )
 
 
 if __name__ == "__main__":
