@@ -1,0 +1,368 @@
+{
+  "sample_rate_hz": 16000,
+  "target_classes": [
+    "dog_bark",
+    "siren",
+    "car_horn",
+    "engine_idling"
+  ],
+  "validation_scenes": [
+    {
+      "name": "val_single_dog",
+      "split": "validation",
+      "filename": "val_single_dog.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "dog_bark",
+          "source_file": "3-144028-A-0.wav",
+          "clip_key": "val_dog",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 7.2,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "val_single_siren",
+      "split": "validation",
+      "filename": "val_single_siren.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "siren",
+          "source_file": "3-51731-A-42.wav",
+          "clip_key": "val_siren",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 7.2,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "val_single_horn",
+      "split": "validation",
+      "filename": "val_single_horn.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "car_horn",
+          "source_file": "3-145577-A-43.wav",
+          "clip_key": "val_horn",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 3.3,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "val_single_engine",
+      "split": "validation",
+      "filename": "val_single_engine.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "engine_idling",
+          "source_file": "3-119455-A-44.wav",
+          "clip_key": "val_engine",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 7.2,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "val_seq_dog_engine",
+      "split": "validation",
+      "filename": "val_seq_dog_engine.wav",
+      "duration_s": 16.0,
+      "events": [
+        {
+          "label": "dog_bark",
+          "source_file": "3-144028-A-0.wav",
+          "clip_key": "val_dog",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 7.2,
+          "gain": 1.0
+        },
+        {
+          "label": "engine_idling",
+          "source_file": "3-119455-A-44.wav",
+          "clip_key": "val_engine",
+          "insert_start_s": 9.6,
+          "insert_end_s": 14.6,
+          "onset_s": 9.6,
+          "offset_s": 14.4,
+          "gain": 1.0
+        }
+      ]
+    }
+  ],
+  "test_scenes": [
+    {
+      "name": "dog_only",
+      "split": "test",
+      "filename": "dog_only.wav",
+      "duration_s": 8.0,
+      "events": [
+        {
+          "label": "dog_bark",
+          "source_file": "4-182395-A-0.wav",
+          "clip_key": "test_dog_short",
+          "insert_start_s": 2.0,
+          "insert_end_s": 7.0,
+          "onset_s": 2.7,
+          "offset_s": 3.1,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "dog_sustained",
+      "split": "test",
+      "filename": "dog_sustained.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "dog_bark",
+          "source_file": "4-184575-A-0.wav",
+          "clip_key": "test_dog_sustained",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 7.2,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "siren_only",
+      "split": "test",
+      "filename": "siren_only.wav",
+      "duration_s": 8.0,
+      "events": [
+        {
+          "label": "siren",
+          "source_file": "4-102871-A-42.wav",
+          "clip_key": "test_siren_steady",
+          "insert_start_s": 2.0,
+          "insert_end_s": 7.0,
+          "onset_s": 2.0,
+          "offset_s": 6.8,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "siren_modulated",
+      "split": "test",
+      "filename": "siren_modulated.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "siren",
+          "source_file": "4-67358-A-42.wav",
+          "clip_key": "test_siren_mod",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 6.24,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "horn_only",
+      "split": "test",
+      "filename": "horn_only.wav",
+      "duration_s": 8.0,
+      "events": [
+        {
+          "label": "car_horn",
+          "source_file": "4-175845-A-43.wav",
+          "clip_key": "test_horn_a",
+          "insert_start_s": 2.0,
+          "insert_end_s": 7.0,
+          "onset_s": 2.0,
+          "offset_s": 3.44,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "horn_half",
+      "split": "test",
+      "filename": "horn_half.wav",
+      "duration_s": 8.0,
+      "events": [
+        {
+          "label": "car_horn",
+          "source_file": "4-175845-A-43.wav",
+          "clip_key": "test_horn_a",
+          "insert_start_s": 2.0,
+          "insert_end_s": 7.0,
+          "onset_s": 2.0,
+          "offset_s": 3.44,
+          "gain": 0.5
+        }
+      ]
+    },
+    {
+      "name": "engine_fluctuating",
+      "split": "test",
+      "filename": "engine_fluctuating.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "engine_idling",
+          "source_file": "4-186935-A-44.wav",
+          "clip_key": "test_engine_a",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 5.76,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "engine_sustained",
+      "split": "test",
+      "filename": "engine_sustained.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "engine_idling",
+          "source_file": "4-186936-A-44.wav",
+          "clip_key": "test_engine_b",
+          "insert_start_s": 2.4,
+          "insert_end_s": 7.4,
+          "onset_s": 2.4,
+          "offset_s": 7.2,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "sequential_4class",
+      "split": "test",
+      "filename": "sequential_4class.wav",
+      "duration_s": 24.0,
+      "events": [
+        {
+          "label": "dog_bark",
+          "source_file": "4-182395-A-0.wav",
+          "clip_key": "test_dog_short",
+          "insert_start_s": 1.2,
+          "insert_end_s": 6.2,
+          "onset_s": 1.9,
+          "offset_s": 2.3,
+          "gain": 1.0
+        },
+        {
+          "label": "car_horn",
+          "source_file": "4-175846-A-43.wav",
+          "clip_key": "test_horn_b",
+          "insert_start_s": 6.0,
+          "insert_end_s": 11.0,
+          "onset_s": 6.0,
+          "offset_s": 8.4,
+          "gain": 1.0
+        },
+        {
+          "label": "engine_idling",
+          "source_file": "4-186935-A-44.wav",
+          "clip_key": "test_engine_a",
+          "insert_start_s": 12.0,
+          "insert_end_s": 17.0,
+          "onset_s": 12.0,
+          "offset_s": 15.36,
+          "gain": 1.0
+        },
+        {
+          "label": "siren",
+          "source_file": "4-102871-A-42.wav",
+          "clip_key": "test_siren_steady",
+          "insert_start_s": 16.8,
+          "insert_end_s": 21.8,
+          "onset_s": 16.8,
+          "offset_s": 21.6,
+          "gain": 1.0
+        }
+      ]
+    },
+    {
+      "name": "overlap_equal",
+      "split": "test",
+      "filename": "overlap_equal.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "siren",
+          "source_file": "4-102871-A-42.wav",
+          "clip_key": "test_siren_steady",
+          "insert_start_s": 1.0,
+          "insert_end_s": 6.0,
+          "onset_s": 1.0,
+          "offset_s": 5.8,
+          "gain": 0.5
+        },
+        {
+          "label": "car_horn",
+          "source_file": "4-175845-A-43.wav",
+          "clip_key": "test_horn_a",
+          "insert_start_s": 3.0,
+          "insert_end_s": 8.0,
+          "onset_s": 3.0,
+          "offset_s": 4.44,
+          "gain": 0.5
+        }
+      ]
+    },
+    {
+      "name": "overlap_horn_boost",
+      "split": "test",
+      "filename": "overlap_horn_boost.wav",
+      "duration_s": 10.0,
+      "events": [
+        {
+          "label": "siren",
+          "source_file": "4-102871-A-42.wav",
+          "clip_key": "test_siren_steady",
+          "insert_start_s": 1.0,
+          "insert_end_s": 6.0,
+          "onset_s": 1.0,
+          "offset_s": 5.8,
+          "gain": 0.25
+        },
+        {
+          "label": "car_horn",
+          "source_file": "4-175845-A-43.wav",
+          "clip_key": "test_horn_a",
+          "insert_start_s": 3.0,
+          "insert_end_s": 8.0,
+          "onset_s": 3.0,
+          "offset_s": 4.44,
+          "gain": 0.75
+        }
+      ]
+    },
+    {
+      "name": "silence",
+      "split": "test",
+      "filename": "silence.wav",
+      "duration_s": 8.0,
+      "events": []
+    }
+  ]
+}
