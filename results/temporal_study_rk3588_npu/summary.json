@@ -1,0 +1,473 @@
+{
+  "backend": "RK3588 NPU (RKNNLite)",
+  "target_classes": [
+    "dog_bark",
+    "siren",
+    "car_horn",
+    "engine_idling"
+  ],
+  "full_10class_mapping": {
+    "air_conditioner": {
+      "primary_index": 407,
+      "primary_name": "Air conditioning",
+      "indices": [
+        407
+      ],
+      "names": [
+        "Air conditioning"
+      ],
+      "alignment": "exact",
+      "note": "Direct 1-to-1 match with AudioSet 'Air conditioning' (index 407)."
+    },
+    "car_horn": {
+      "primary_index": 302,
+      "primary_name": "Vehicle horn, car horn, honking",
+      "indices": [
+        302,
+        312
+      ],
+      "names": [
+        "Vehicle horn, car horn, honking",
+        "Air horn, truck horn"
+      ],
+      "alignment": "exact",
+      "note": "Primary match at index 302; index 312 covers heavy-vehicle air horns."
+    },
+    "children_playing": {
+      "primary_index": 66,
+      "primary_name": "Children playing",
+      "indices": [
+        66,
+        10
+      ],
+      "names": [
+        "Children playing",
+        "Children shouting"
+      ],
+      "alignment": "exact",
+      "note": "Direct match at index 66; outdoor playground clips also activate index 10."
+    },
+    "dog_bark": {
+      "primary_index": 70,
+      "primary_name": "Bark",
+      "indices": [
+        70,
+        69
+      ],
+      "names": [
+        "Bark",
+        "Dog"
+      ],
+      "alignment": "exact",
+      "note": "Direct match with 'Bark' (index 70) and parent class 'Dog' (index 69)."
+    },
+    "drilling": {
+      "primary_index": 419,
+      "primary_name": "Drill",
+      "indices": [
+        419
+      ],
+      "names": [
+        "Drill"
+      ],
+      "alignment": "exact",
+      "note": "Direct 1-to-1 match with AudioSet 'Drill' (index 419)."
+    },
+    "engine_idling": {
+      "primary_index": 346,
+      "primary_name": "Idling",
+      "indices": [
+        346,
+        337,
+        342,
+        343
+      ],
+      "names": [
+        "Idling",
+        "Engine",
+        "Medium engine (mid frequency)",
+        "Heavy engine (low frequency)"
+      ],
+      "alignment": "hierarchical",
+      "note": "AudioSet includes 'Idling' (346), but stationary vehicle engines frequently distribute probability across parent 'Engine' (337) and low/mid-frequency engine nodes (342, 343)."
+    },
+    "gun_shot": {
+      "primary_index": 421,
+      "primary_name": "Gunshot, gunfire",
+      "indices": [
+        421,
+        422
+      ],
+      "names": [
+        "Gunshot, gunfire",
+        "Machine gun"
+      ],
+      "alignment": "exact",
+      "note": "Direct match with 'Gunshot, gunfire' (index 421)."
+    },
+    "jackhammer": {
+      "primary_index": 414,
+      "primary_name": "Jackhammer",
+      "indices": [
+        414
+      ],
+      "names": [
+        "Jackhammer"
+      ],
+      "alignment": "exact",
+      "note": "Direct 1-to-1 match with AudioSet 'Jackhammer' (index 414)."
+    },
+    "siren": {
+      "primary_index": 390,
+      "primary_name": "Siren",
+      "indices": [
+        390,
+        317,
+        318,
+        319,
+        391
+      ],
+      "names": [
+        "Siren",
+        "Police car (siren)",
+        "Ambulance (siren)",
+        "Fire engine, fire truck (siren)",
+        "Civil defense siren"
+      ],
+      "alignment": "exact",
+      "note": "Direct match with 'Siren' (390) and emergency vehicle siren subclasses."
+    },
+    "street_music": {
+      "primary_index": 132,
+      "primary_name": "Music",
+      "indices": [
+        132,
+        133,
+        249
+      ],
+      "names": [
+        "Music",
+        "Musical instrument",
+        "Vocal music"
+      ],
+      "alignment": "broad_proxy",
+      "note": "YAMNet's 521-class AudioSet ontology has no dedicated 'street_music' node; it is mapped via the general 'Music' node (132) and 'Musical instrument' (133)."
+    }
+  },
+  "selected_class_thresholds": {
+    "dog_bark": 0.2,
+    "siren": 0.2,
+    "car_horn": 0.2,
+    "engine_idling": 0.12
+  },
+  "selected_hysteresis_params": {
+    "dog_bark": {
+      "theta_on": 0.2,
+      "theta_off": 0.06
+    },
+    "siren": {
+      "theta_on": 0.2,
+      "theta_off": 0.06
+    },
+    "car_horn": {
+      "theta_on": 0.2,
+      "theta_off": 0.06
+    },
+    "engine_idling": {
+      "theta_on": 0.2,
+      "theta_off": 0.06
+    }
+  },
+  "validation_metrics": {
+    "global_0.20": {
+      "segment_precision": 1.0,
+      "segment_recall": 0.6562,
+      "segment_f1": 0.7925,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.333,
+      "total_fragments": 8,
+      "detected_events": 6,
+      "mean_onset_delay_s": 0.24,
+      "mean_offset_delay_s": -0.07
+    },
+    "global_0.30": {
+      "segment_precision": 1.0,
+      "segment_recall": 0.5781,
+      "segment_f1": 0.7327,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.0,
+      "total_fragments": 6,
+      "detected_events": 6,
+      "mean_onset_delay_s": 1.2,
+      "mean_offset_delay_s": -0.07
+    },
+    "class_specific": {
+      "segment_precision": 1.0,
+      "segment_recall": 0.7656,
+      "segment_f1": 0.8673,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 2.0,
+      "total_fragments": 12,
+      "detected_events": 6,
+      "mean_onset_delay_s": -0.24,
+      "mean_offset_delay_s": -0.07
+    },
+    "ema_0.7": {
+      "segment_precision": 0.9286,
+      "segment_recall": 0.6094,
+      "segment_f1": 0.7358,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.0,
+      "total_fragments": 6,
+      "detected_events": 6,
+      "mean_onset_delay_s": 1.04,
+      "mean_offset_delay_s": 0.17
+    },
+    "ema_0.5": {
+      "segment_precision": 0.9302,
+      "segment_recall": 0.625,
+      "segment_f1": 0.7477,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.0,
+      "total_fragments": 6,
+      "detected_events": 6,
+      "mean_onset_delay_s": 1.04,
+      "mean_offset_delay_s": 0.25
+    },
+    "ema_0.3": {
+      "segment_precision": 0.8,
+      "segment_recall": 0.5625,
+      "segment_f1": 0.6606,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.0,
+      "total_fragments": 6,
+      "detected_events": 6,
+      "mean_onset_delay_s": 1.36,
+      "mean_offset_delay_s": 0.73
+    },
+    "hysteresis": {
+      "segment_precision": 0.9245,
+      "segment_recall": 0.7656,
+      "segment_f1": 0.8376,
+      "event_tp": 6,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.0,
+      "total_fragments": 6,
+      "detected_events": 6,
+      "mean_onset_delay_s": 0.24,
+      "mean_offset_delay_s": 0.25
+    }
+  },
+  "test_metrics": {
+    "global_0.20": {
+      "segment_precision": 0.9897,
+      "segment_recall": 0.7218,
+      "segment_f1": 0.8348,
+      "event_tp": 15,
+      "event_fp": 1,
+      "event_fn": 1,
+      "event_precision": 0.9375,
+      "event_recall": 0.9375,
+      "event_f1": 0.9375,
+      "fragmentation_per_event": 1.533,
+      "total_fragments": 23,
+      "detected_events": 15,
+      "mean_onset_delay_s": -0.256,
+      "mean_offset_delay_s": -0.117
+    },
+    "global_0.30": {
+      "segment_precision": 0.988,
+      "segment_recall": 0.6165,
+      "segment_f1": 0.7593,
+      "event_tp": 14,
+      "event_fp": 1,
+      "event_fn": 2,
+      "event_precision": 0.9333,
+      "event_recall": 0.875,
+      "event_f1": 0.9032,
+      "fragmentation_per_event": 1.357,
+      "total_fragments": 19,
+      "detected_events": 14,
+      "mean_onset_delay_s": 0.043,
+      "mean_offset_delay_s": -0.22
+    },
+    "class_specific": {
+      "segment_precision": 0.9898,
+      "segment_recall": 0.7293,
+      "segment_f1": 0.8398,
+      "event_tp": 15,
+      "event_fp": 1,
+      "event_fn": 1,
+      "event_precision": 0.9375,
+      "event_recall": 0.9375,
+      "event_f1": 0.9375,
+      "fragmentation_per_event": 1.467,
+      "total_fragments": 22,
+      "detected_events": 15,
+      "mean_onset_delay_s": -0.288,
+      "mean_offset_delay_s": -0.117
+    },
+    "ema_0.7": {
+      "segment_precision": 0.9697,
+      "segment_recall": 0.7218,
+      "segment_f1": 0.8276,
+      "event_tp": 15,
+      "event_fp": 1,
+      "event_fn": 1,
+      "event_precision": 0.9375,
+      "event_recall": 0.9375,
+      "event_f1": 0.9375,
+      "fragmentation_per_event": 1.333,
+      "total_fragments": 20,
+      "detected_events": 15,
+      "mean_onset_delay_s": -0.096,
+      "mean_offset_delay_s": 0.011
+    },
+    "ema_0.5": {
+      "segment_precision": 0.951,
+      "segment_recall": 0.7293,
+      "segment_f1": 0.8255,
+      "event_tp": 14,
+      "event_fp": 0,
+      "event_fn": 2,
+      "event_precision": 1.0,
+      "event_recall": 0.875,
+      "event_f1": 0.9333,
+      "fragmentation_per_event": 1.286,
+      "total_fragments": 18,
+      "detected_events": 14,
+      "mean_onset_delay_s": -0.026,
+      "mean_offset_delay_s": 0.294
+    },
+    "ema_0.3": {
+      "segment_precision": 0.8611,
+      "segment_recall": 0.6992,
+      "segment_f1": 0.7718,
+      "event_tp": 14,
+      "event_fp": 0,
+      "event_fn": 2,
+      "event_precision": 1.0,
+      "event_recall": 0.875,
+      "event_f1": 0.9333,
+      "fragmentation_per_event": 1.0,
+      "total_fragments": 14,
+      "detected_events": 14,
+      "mean_onset_delay_s": 0.214,
+      "mean_offset_delay_s": 0.66
+    },
+    "hysteresis": {
+      "segment_precision": 0.9903,
+      "segment_recall": 0.7669,
+      "segment_f1": 0.8644,
+      "event_tp": 15,
+      "event_fp": 1,
+      "event_fn": 1,
+      "event_precision": 0.9375,
+      "event_recall": 0.9375,
+      "event_f1": 0.9375,
+      "fragmentation_per_event": 1.133,
+      "total_fragments": 17,
+      "detected_events": 15,
+      "mean_onset_delay_s": -0.256,
+      "mean_offset_delay_s": -0.085
+    }
+  },
+  "engine_taxonomy_comparison": {
+    "single_node_idling_346": {
+      "segment_precision": 1.0,
+      "segment_recall": 0.6667,
+      "segment_f1": 0.8,
+      "event_tp": 3,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 2.667,
+      "total_fragments": 8,
+      "detected_events": 3,
+      "mean_onset_delay_s": 0.0,
+      "mean_offset_delay_s": 0.0
+    },
+    "hierarchical_max_engine": {
+      "segment_precision": 1.0,
+      "segment_recall": 0.8333,
+      "segment_f1": 0.9091,
+      "event_tp": 3,
+      "event_fp": 0,
+      "event_fn": 0,
+      "event_precision": 1.0,
+      "event_recall": 1.0,
+      "event_f1": 1.0,
+      "fragmentation_per_event": 1.333,
+      "total_fragments": 4,
+      "detected_events": 3,
+      "mean_onset_delay_s": -0.16,
+      "mean_offset_delay_s": 0.0
+    }
+  },
+  "masking_and_gain_control": {
+    "horn_only": {
+      "max_car_horn_score": 0.8765,
+      "max_siren_score": 0.1155
+    },
+    "horn_half": {
+      "max_car_horn_score": 0.8296,
+      "max_siren_score": 0.0671
+    },
+    "overlap_equal": {
+      "max_car_horn_score": 0.0777,
+      "max_siren_score": 0.9004
+    },
+    "overlap_horn_boost": {
+      "max_car_horn_score": 0.2571,
+      "max_siren_score": 0.9077
+    }
+  },
+  "latency_profile": {
+    "window_count": 87,
+    "window_duration_s": 3.0,
+    "window_step_s": 2.4,
+    "patch_hop_s": 0.48,
+    "patch_context_s": 0.9750000000000001,
+    "mean_inference_ms": 20.825,
+    "p50_inference_ms": 20.136,
+    "p95_inference_ms": 26.793,
+    "real_time_factor": 0.00868,
+    "postprocessing_total_ms": 38.74
+  }
+}
