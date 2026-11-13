@@ -5,6 +5,7 @@
 This repository contains my ELEC5305 project on urban sound event detection (SED) running on the **Rockchip RK3588 NPU (Embedfire LubanCat-5 V2)** with Google's pretrained **YAMNet** model. Instead of retraining the CNN backbone, this project studies how short-time patch predictions (`0.96 s` window, `0.48 s` hop) can be mapped to target urban classes and smoothed over time to reduce event fragmentation and onset/offset delay.
 
 - **Project Website:** <https://kolentossa.github.io/elec5305-project-550374130/>
+- **Presentation:** [Watch the video](https://kolentossa.github.io/elec5305-project-550374130/#presentation) - [Video file (MP4)](ELEC5305_Presentation_Mingze_Li_550374130.mp4)
 - **Final Report:** [Final Project Report (Markdown)](docs/final_report.md) - [Final Project Report (PDF)](docs/submission/ELEC5305_Final_Report_Mingze_Li_550374130.pdf)
 - **Experiment Notes:** [Temporal Postprocessing & Masking Study](docs/temporal_study.md) - [Initial 6-Scene Pilot](docs/initial_implementation.md) - [3-Second Backend Verification](docs/first_run.md) - [RK3588 NPU Setup](docs/rk3588_setup.md)
 - **Earlier Submissions:** [Initial Milestone PDF](docs/submission/ELEC5305_Initial_Implementation_Mingze_Li_550374130.pdf) - [Original Proposal PDF](docs/ELEC5305_Project_Proposal_Mingze_Li.pdf)

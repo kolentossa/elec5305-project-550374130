@@ -9,7 +9,18 @@ title: ELEC5305 Project
 My project tests urban sound event detection (SED) on a **Rockchip RK3588 NPU (Embedfire LubanCat-5 V2)** using pretrained **YAMNet** (`0.96 s` patch window, `0.48 s` hop). Rather than training a CNN classifier from scratch, I focus on how short-time patch scores can be mapped to urban sound classes and smoothed over time to balance false alarms, event fragmentation, concurrent masking, and onset/offset delay.
 
 **Project Links:**
-[Final Report (Web)]({{ '/docs/final_report.html' | relative_url }}) - [Final Report (PDF)]({{ '/docs/submission/ELEC5305_Final_Report_Mingze_Li_550374130.pdf' | relative_url }}) - [Temporal & Masking Study]({{ '/docs/temporal_study.html' | relative_url }}) - [Initial 6-Scene Pilot]({{ '/docs/initial_implementation.html' | relative_url }}) - [3s Backend Verification]({{ '/docs/first_run.html' | relative_url }}) - [RK3588 NPU Setup]({{ '/docs/rk3588_setup.html' | relative_url }}) - [GitHub Repository](https://github.com/kolentossa/elec5305-project-550374130)
+[Presentation](#presentation) - [Final Report (Web)]({{ '/docs/final_report.html' | relative_url }}) - [Final Report (PDF)]({{ '/docs/submission/ELEC5305_Final_Report_Mingze_Li_550374130.pdf' | relative_url }}) - [Temporal & Masking Study]({{ '/docs/temporal_study.html' | relative_url }}) - [Initial 6-Scene Pilot]({{ '/docs/initial_implementation.html' | relative_url }}) - [3s Backend Verification]({{ '/docs/first_run.html' | relative_url }}) - [RK3588 NPU Setup]({{ '/docs/rk3588_setup.html' | relative_url }}) - [GitHub Repository](https://github.com/kolentossa/elec5305-project-550374130)
+
+## Presentation
+
+3 min 15 sec, with English subtitles.
+
+<video controls playsinline preload="metadata" width="1920" height="1080" style="width: 100%; height: auto;">
+  <source src="{{ '/ELEC5305_Presentation_Mingze_Li_550374130.mp4' | relative_url }}" type="video/mp4">
+  Your browser does not support embedded video.
+</video>
+
+<p><a href="{{ '/ELEC5305_Presentation_Mingze_Li_550374130.mp4' | relative_url }}" download>Download the video (MP4)</a></p>
 
 ---
 
