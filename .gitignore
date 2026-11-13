@@ -2,3 +2,9 @@
 .cache/
 __pycache__/
 *.py[cod]
+
+# Generated result exports
+/results/*/scores.csv
+/results/initial_pilot*/*_scores.csv
+/results/initial_pilot*/events.csv
+*.log
